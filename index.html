@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talks Tools - Advanced Content Suite</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- Custom Theme & Styles --- */
+        :root {
+            --bg-primary: #0D0D0D;
+            --bg-secondary: #1A1A1A;
+            --bg-tertiary: #2A2A2A;
+            --accent-primary: #00FFA3;
+            --accent-hover: #00E692;
+            --text-primary: #FFFFFF;
+            --text-secondary: #A3A3A3;
+            --border-color: #2A2A2A;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        ::-webkit-scrollbar-thumb { background: var(--accent-primary); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-hover); }
+
+        /* Animations */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        
+        @keyframes blink {
+            50% { border-color: transparent; }
+        }
+        .blinking-cursor {
+            border-right: 3px solid var(--accent-primary);
+            animation: blink 0.75s step-end infinite;
+        }
+
+        /* --- Component Styles --- */
+        .sidebar-icon {
+            transition: color 0.2s ease-in-out;
+        }
+        .sidebar-link:hover .sidebar-icon,
+        .sidebar-link.active .sidebar-icon,
+        .sidebar-link:hover span,
+        .sidebar-link.active span {
+            color: var(--accent-primary);
+        }
+        
+        .main-btn {
+            background-color: var(--accent-primary);
+            color: var(--bg-primary);
+            font-weight: 700;
+            border-radius: 8px;
+            transition: background-color 0.2s ease-in-out, transform 0.2s ease;
+        }
+        .main-btn:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+
+        .secondary-btn {
+            background-color: var(--bg-tertiary);
+            color: var(--text-primary);
+            font-weight: 600;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            transition: background-color 0.2s ease-in-out, transform 0.2s ease;
+        }
+        .secondary-btn:hover {
+            background-color: #3a3a3a;
+        }
+
+        .custom-input, .custom-select {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            padding: 0.75rem 1rem;
+        }
+        .custom-input:focus, .custom-select:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 2px rgba(0, 255, 163, 0.3);
+        }
+        
+        .result-card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+        }
+        
+        /* Hide number input arrows */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+          -webkit-appearance: none; 
+          margin: 0; 
+        }
+        input[type=number] {
+          -moz-appearance: textfield;
+        }
+    </style>
+</head>
+<body class="h-screen flex flex-col">
+    
+    <!-- Main Header -->
+    <header class="w-full bg-zinc-900/80 backdrop-blur-md border-b border-border-color z-40 flex-shrink-0">
+        <div class="container mx-auto flex justify-between items-center p-4">
+            <a href="#" data-page="home" class="nav-trigger flex items-center gap-2">
+                <i class="fas fa-bolt fa-lg text-accent-primary"></i>
+                <h1 class="text-xl font-bold">Talks Tools</h1>
+            </a>
+            <nav class="hidden md:flex items-center gap-6">
+                 <a href="#" data-page="home" class="nav-trigger text-text-secondary hover:text-text-primary transition-colors">Home</a>
+                 <a href="#" class="coming-soon-link text-text-secondary hover:text-text-primary transition-colors">Privacy</a>
+                 <a href="#" class="coming-soon-link text-text-secondary hover:text-text-primary transition-colors">Contact</a>
+                 <a href="#" class="coming-soon-link text-text-secondary hover:text-text-primary transition-colors">Services</a>
+                 <a href="#" class="coming-soon-link text-text-secondary hover:text-text-primary transition-colors">About</a>
+                 <a href="#" class="coming-soon-link text-text-secondary hover:text-text-primary transition-colors">Blog</a>
+            </nav>
+            <button id="hamburger-btn" class="p-2 text-2xl md:hidden">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="fixed top-0 left-0 w-64 h-full bg-zinc-900 border-r border-border-color p-4 flex-col justify-between transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out z-50 md:flex">
+            <div class="flex flex-col h-full">
+                <a href="#" data-page="home" id="nav-home" class="nav-trigger hidden md:flex items-center gap-3 mb-10 px-2">
+                    <i class="fas fa-bolt fa-2x text-accent-primary"></i>
+                    <h1 class="text-2xl font-bold">Talks Tools</h1>
+                </a>
+                <nav id="main-nav" class="flex flex-col gap-1 overflow-y-auto">
+                    <!-- Nav links will be injected here -->
+                </nav>
+            </div>
+             <div class="mt-auto px-2 pt-4 flex-shrink-0">
+                <p class="text-xs text-text-secondary">Powered by The Talks Automation</p>
+            </div>
+        </aside>
+        
+        <!-- Overlay for mobile menu -->
+        <div id="overlay" class="fixed inset-0 bg-zinc-900/90 backdrop-blur-sm z-40 hidden md:hidden"></div>
+
+        <!-- Main Content Area -->
+        <div id="main-content" class="flex-1 overflow-y-auto">
+            <!-- All pages will be injected here and toggled -->
+            <main id="page-home" class="p-4 sm:p-6 md:p-8"></main>
+            <main id="page-content-generator" class="p-4 sm:p-6 md:p-8 hidden"></main>
+            <main id="page-script-generator" class="p-4 sm:p-6 md:p-8 hidden"></main>
+            <main id="page-prompt-generator" class="p-4 sm:p-6 md:p-8 hidden"></main>
+            <main id="page-channel-extractor" class="p-4 sm:p-6 md:p-8 hidden"></main>
+            <main id="page-tags-generator" class="p-4 sm:p-6 md:p-8 hidden"></main>
+            <main id="page-keyword-suggester" class="p-4 sm:p-6 md:p-8 hidden"></main>
+            <main id="page-thumbnail-downloader" class="p-4 sm:p-6 md:p-8 hidden"></main>
+            <main id="page-find-competitors" class="p-4 sm:p-6 md:p-8 hidden"></main>
+            <main id="page-subscribe-link" class="p-4 sm:p-6 md:p-8 hidden"></main>
+            <main id="page-money-calculator" class="p-4 sm:p-6 md:p-8 hidden"></main>
+            <main id="page-title-capitalizer" class="p-4 sm:p-6 md:p-8 hidden"></main>
+            <main id="page-embed-code" class="p-4 sm:p-6 md:p-8 hidden"></main>
+        </div>
+    </div>
+    
+    <footer class="w-full bg-zinc-900 border-t border-border-color z-40 flex-shrink-0">
+        <div class="container mx-auto text-center p-4">
+            <div class="flex justify-center gap-6 mb-2">
+                <a href="#" class="text-text-secondary hover:text-accent-primary transition-colors"><i class="fab fa-youtube fa-lg"></i></a>
+                <a href="#" class="text-text-secondary hover:text-accent-primary transition-colors"><i class="fab fa-twitter fa-lg"></i></a>
+                <a href="#" class="text-text-secondary hover:text-accent-primary transition-colors"><i class="fab fa-instagram fa-lg"></i></a>
+            </div>
+            <p class="text-sm text-text-secondary">&copy; 2025 Talks Tools. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+
+    <!-- Generic Pop-Up -->
+    <div id="popup" class="fixed bottom-5 right-5 text-white p-4 rounded-xl shadow-2xl z-50 transition-all duration-300 transform translate-y-20 opacity-0">
+        <p id="popup-text" class="font-semibold"></p>
+    </div>
+
+    <script>
+        // --- API Configuration ---
+        const API_KEY = "AIzaSyCO18Y_YH9AGDKz8cwuswCRsvtLfAtYBYA";
+
+        // --- Tool Definitions ---
+        const tools = [
+            { id: 'content-generator', name: 'Content Generator', icon: 'fas fa-magic', description: 'Instantly create SEO-optimized titles, descriptions, and tags.' },
+            { id: 'script-generator', name: 'Script Generator', icon: 'fas fa-file-alt', description: 'Generate complete video scripts in any language or tone.' },
+            { id: 'prompt-generator', name: 'Prompt Generator', icon: 'fas fa-lightbulb', description: 'Craft expert-level prompts for AI image, video, and text generation.' },
+            { id: 'channel-extractor', name: 'Channel Extractor', icon: 'fab fa-youtube', description: 'Extract data and generate new content from any YouTube video.' },
+            { id: 'tags-generator', name: 'Video Tags Generator', icon: 'fas fa-tags', description: 'Generate optimized tags from a YouTube video URL.' },
+            { id: 'keyword-suggester', name: 'Keyword Suggester', icon: 'fas fa-key', description: 'Get relevant keywords and tags for your video topic.' },
+            { id: 'thumbnail-downloader', name: 'Thumbnail Downloader', icon: 'fas fa-image', description: 'Download any YouTube video\'s thumbnail in high quality.' },
+            { id: 'find-competitors', name: 'Find Competitors', icon: 'fas fa-users', description: 'Get AI-powered analysis of competitor channels.' },
+            { id: 'subscribe-link', name: 'Subscribe Link', icon: 'fas fa-link', description: 'Create a link that prompts users to subscribe to your channel.' },
+            { id: 'money-calculator', name: 'Money Calculator', icon: 'fas fa-calculator', description: 'Estimate your potential YouTube earnings based on views and RPM.' },
+            { id: 'title-capitalizer', name: 'Title Capitalizer', icon: 'fas fa-text-height', description: 'Properly capitalize your video titles with a single click.' },
+            { id: 'embed-code', name: 'Embed Code', icon: 'fas fa-code', description: 'Generate HTML embed codes for your YouTube videos.' }
+        ];
+
+        // --- Page Templates ---
+        const pageTemplates = {
+            home: `
+                <div class="max-w-4xl mx-auto">
+                    <header class="mb-12 text-center">
+                        <h2 class="text-4xl md:text-5xl font-extrabold text-text-primary">Welcome to <span class="text-accent-primary">Talks Tools</span></h2>
+                        <p class="text-text-secondary mt-2 text-lg h-8"><span id="animated-text" class="blinking-cursor"></span></p>
+                    </header>
+                    <div id="home-tools-grid" class="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-12">
+                        <!-- Tool cards will be injected here -->
+                    </div>
+                    <div class="result-card p-6">
+                        <h3 class="text-2xl font-bold mb-6 text-center">About The Developer</h3>
+                        <div class="flex flex-col md:flex-row items-center gap-8">
+                            <div class="flex-shrink-0"><img src="https://placehold.co/150x150/00FFA3/0D0D0D?text=MT" alt="Mustafa Talks" class="rounded-full w-36 h-36 border-4 border-accent-primary"></div>
+                            <div><h4 class="text-2xl font-bold text-accent-primary">Mustafa Talks</h4><p class="text-text-secondary mt-2">I'm a passionate content creator and developer dedicated to building tools that empower other creators. Talks Tools was born from a need to streamline the creative process, leveraging the power of AI to handle the heavy lifting so you can focus on what you do best: creating amazing content.</p></div>
+                        </div>
+                    </div>
+                </div>`,
+            'content-generator': `
+                <div class="max-w-4xl mx-auto">
+                    <header class="mb-8"><h2 class="text-3xl font-extrabold">AI Content Generator</h2><p class="text-text-secondary mt-1">Create optimized Titles, Descriptions, and Tags.</p></header>
+                    <div class="result-card p-6 mb-8">
+                        <label for="content-keyword-input" class="block text-lg font-semibold mb-3 text-accent-primary">Video Topic</label>
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <input type="text" id="content-keyword-input" class="w-full custom-input" placeholder="e.g., 'The future of AI in 2026'">
+                            <button id="generate-content-btn" class="main-btn py-3 px-6 flex items-center justify-center whitespace-nowrap"><i class="fas fa-magic mr-2"></i><span class="btn-text">Generate</span><div class="spinner hidden w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div></button>
+                        </div>
+                    </div>
+                    <div id="content-results-wrapper" class="space-y-6 hidden">
+                        <div class="result-card p-6 fade-in"><h3 class="text-xl font-bold mb-4">Generated Titles</h3><div id="titles-output" class="space-y-3"></div></div>
+                        <div class="result-card p-6 fade-in"><div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold">Generated Description</h3><button class="copy-btn text-text-secondary hover:text-accent-primary" title="Copy" id="copy-desc-btn"><i class="fas fa-copy text-lg"></i></button></div><div id="description-output" class="text-text-secondary whitespace-pre-wrap bg-bg-primary p-4 rounded-lg min-h-[120px]"></div></div>
+                        <div class="result-card p-6 fade-in"><div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold">Generated Tags</h3><button class="copy-btn text-text-secondary hover:text-accent-primary" title="Copy" id="copy-tags-btn"><i class="fas fa-copy text-lg"></i></button></div><div id="tags-output" class="text-text-secondary bg-bg-primary p-4 rounded-lg min-h-[80px]"></div></div>
+                        <div class="result-card p-6 fade-in"><div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold">Copyright Disclaimer</h3><button class="copy-btn text-text-secondary hover:text-accent-primary" title="Copy" id="copy-copyright-btn"><i class="fas fa-copy text-lg"></i></button></div><div id="copyright-output" class="text-sm text-text-secondary bg-bg-primary p-4 rounded-lg"></div></div>
+                    </div>
+                </div>`,
+            'script-generator': `
+                <div class="max-w-4xl mx-auto">
+                    <header class="mb-8"><h2 class="text-3xl font-extrabold">AI Script Generator</h2><p class="text-text-secondary mt-1">Generate a complete video script in any language and tone.</p></header>
+                    <div class="result-card p-6 mb-8">
+                        <h3 class="text-xl font-bold mb-4">Need help with a video idea?</h3>
+                        <button id="show-idea-helper-btn" class="secondary-btn w-full py-2 px-4 flex items-center justify-center"><i class="fas fa-search mr-2"></i>Generate Video Ideas</button>
+                        <div id="idea-helper-ui" class="hidden mt-4 pt-4 border-t border-border-color">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                 <div><label for="idea-category-select" class="block text-sm font-semibold mb-2 text-accent-primary">Category</label><select id="idea-category-select" class="w-full custom-select"><option value="Tech">Tech</option><option value="Art">Art</option><option value="History">History</option><option value="Science">Science</option><option value="Music">Music</option><option value="Mystery">Mystery</option></select></div>
+                                 <div><label for="idea-keyword-input" class="block text-sm font-semibold mb-2 text-accent-primary">Keyword</label><input type="text" id="idea-keyword-input" class="w-full custom-input" placeholder="e.g., 'iPhone' or 'Rock music'"></div>
+                            </div>
+                            <button id="generate-ideas-btn" class="main-btn w-full py-2 px-4 mt-4 flex items-center justify-center"><i class="fas fa-lightbulb mr-2"></i><span class="btn-text">Get 5 Ideas</span><div class="spinner hidden w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div></button>
+                            <div id="ideas-output" class="mt-4 space-y-2"></div>
+                        </div>
+                    </div>
+                    <div class="result-card p-6 mb-8">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                            <div class="col-span-1 md:col-span-2"><label for="script-topic-input" class="block text-sm font-semibold mb-2 text-accent-primary">Video Topic</label><input type="text" id="script-topic-input" class="w-full custom-input" placeholder="Click an idea above or enter a topic"></div>
+                            <div><label for="script-language-select" class="block text-sm font-semibold mb-2 text-accent-primary">Language</label><select id="script-language-select" class="w-full custom-select"><option value="Roman Urdu">Roman Urdu</option><option value="English">English</option><option value="Hindi (in Devanagari script)">Hindi</option><option value="Urdu">Urdu</option><option value="Spanish">Spanish</option><option value="Arabic">Arabic</option></select></div>
+                            <div><label for="script-type-select" class="block text-sm font-semibold mb-2 text-accent-primary">Script Type</label><select id="script-type-select" class="w-full custom-select"><option value="Standard Storytelling">Standard Storytelling</option><option value="Tech Explainer">Tech Explainer</option><option value="Training/Tutorial">Training/Tutorial</option><option value="Explainer Video">Explainer Video</option><option value="Listicle (e.g., Top 5)">Listicle (e.g., Top 5)</option><option value="How-To Guide">How-To Guide</option><option value="Product Demo">Product Demo</option><option value="Vlog">Vlog</option><option value="Interview">Interview</option><option value="Review">Review</option></select></div>
+                            <div class="col-span-1 md:col-span-2"><label for="script-tone-select" class="block text-sm font-semibold mb-2 text-accent-primary">Script Tone</label><select id="script-tone-select" class="w-full custom-select"><option value="Engaging & Informative">Engaging & Informative</option><option value="Mysterious & Suspenseful">Mysterious & Suspenseful</option><option value="Energetic & Fun">Energetic & Fun</option><option value="Professional & Authoritative">Professional & Authoritative</option><option value="Casual & Conversational">Casual & Conversational</option></select></div>
+                            <div class="col-span-1 md:col-span-2"><label for="script-words-input" class="block text-sm font-semibold mb-2 text-accent-primary">Approximate Word Count</label><input type="number" id="script-words-input" class="w-full custom-input" placeholder="e.g., 1200"></div>
+                        </div>
+                        <div class="mt-6"><button id="generate-script-btn" class="main-btn w-full py-3 px-6 flex items-center justify-center"><i class="fas fa-file-alt mr-2"></i><span class="btn-text">Generate Script</span><div class="spinner hidden w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div></button></div>
+                    </div>
+                    <div id="script-results-wrapper" class="result-card p-6 hidden"><div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold">Generated Script</h3><button class="copy-btn text-text-secondary hover:text-accent-primary" title="Copy Script" id="copy-script-btn"><i class="fas fa-copy text-lg"></i></button></div><div id="script-output" class="text-text-secondary whitespace-pre-wrap bg-bg-primary p-4 rounded-lg min-h-[200px]"></div></div>
+                </div>`,
+            'prompt-generator': `
+                 <div class="max-w-4xl mx-auto">
+                    <header class="mb-8"><h2 class="text-3xl font-extrabold">AI Prompt Generator</h2><p class="text-text-secondary mt-1">Craft expert-level prompts for any AI model.</p></header>
+                    <div class="result-card p-6 mb-8">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                            <div class="col-span-1 md:col-span-2"><label for="prompt-topic-input" class="block text-sm font-semibold mb-2 text-accent-primary">Your Topic / Idea</label><input type="text" id="prompt-topic-input" class="w-full custom-input" placeholder="e.g., 'A haunted spaceship' or 'A summary of climate change'"></div>
+                            <div><label for="prompt-category-select" class="block text-sm font-semibold mb-2 text-accent-primary">Prompt Category</label><select id="prompt-category-select" class="w-full custom-select"><option value="">-- Select a Category --</option><option value="text-to-image">Text-to-Image</option><option value="text-to-video">Text-to-Video</option><option value="general-ai">General AI Interaction</option></select></div>
+                            <div><label for="prompt-style-select" class="block text-sm font-semibold mb-2 text-accent-primary">Prompt Style</label><select id="prompt-style-select" class="w-full custom-select" disabled><option>-- Select Category First --</option></select></div>
+                            <div class="col-span-1 md:col-span-2"><label for="prompt-quantity-input" class="block text-sm font-semibold mb-2 text-accent-primary">Number of Prompts</label><input type="number" id="prompt-quantity-input" class="w-full custom-input" value="1" min="1" max="10"></div>
+                        </div>
+                        <div class="mt-6"><button id="generate-prompt-btn" class="main-btn w-full py-3 px-6 flex items-center justify-center"><i class="fas fa-lightbulb mr-2"></i><span class="btn-text">Generate Prompts</span><div class="spinner hidden w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div></button></div>
+                    </div>
+                    <div id="prompt-results-wrapper" class="space-y-6 hidden"></div>
+                </div>`,
+            'channel-extractor': `
+                <div class="max-w-4xl mx-auto">
+                    <header class="mb-8"><h2 class="text-3xl font-extrabold">Channel Extractor</h2><p class="text-text-secondary mt-1">Extract data and generate new content from any YouTube video.</p></header>
+                    <div class="result-card p-6 mb-8">
+                        <label for="extractor-url-input" class="block text-lg font-semibold mb-3 text-accent-primary">YouTube Video URL</label>
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <input type="text" id="extractor-url-input" class="w-full custom-input" placeholder="e.g., https://www.youtube.com/watch?v=...">
+                            <button id="extract-btn" class="main-btn py-3 px-6 flex items-center justify-center whitespace-nowrap"><i class="fas fa-search mr-2"></i><span class="btn-text">Extract & Generate</span><div class="spinner hidden w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div></button>
+                        </div>
+                    </div>
+                    <div id="extractor-results-wrapper" class="space-y-6 hidden">
+                        <div class="result-card p-6 fade-in">
+                            <h3 class="text-xl font-bold mb-4">Thumbnail</h3>
+                            <div class="text-center">
+                                <img id="extractor-thumbnail-output" src="" alt="Video Thumbnail" class="w-full max-w-md mx-auto rounded-lg">
+                                <button id="download-thumbnail-btn" class="secondary-btn py-2 px-5 mt-4 inline-flex items-center"><i class="fas fa-download mr-2"></i>Download Thumbnail</button>
+                            </div>
+                        </div>
+                        <div class="result-card p-6 fade-in">
+                            <div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold">Video Title</h3><button class="copy-btn text-text-secondary hover:text-accent-primary" title="Copy Title" id="copy-extractor-title-btn"><i class="fas fa-copy text-lg"></i></button></div>
+                            <div id="extractor-title-output" class="text-text-secondary whitespace-pre-wrap bg-bg-primary p-4 rounded-lg"></div>
+                        </div>
+                        <div class="result-card p-6 fade-in">
+                             <div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold">Generated Description</h3><button class="copy-btn text-text-secondary hover:text-accent-primary" title="Copy Description" id="copy-extractor-desc-btn"><i class="fas fa-copy text-lg"></i></button></div>
+                            <div id="extractor-desc-output" class="text-text-secondary whitespace-pre-wrap bg-bg-primary p-4 rounded-lg min-h-[120px]"></div>
+                        </div>
+                         <div class="result-card p-6 fade-in">
+                             <div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold">Generated Tags</h3><button class="copy-btn text-text-secondary hover:text-accent-primary" title="Copy Tags" id="copy-extractor-tags-btn"><i class="fas fa-copy text-lg"></i></button></div>
+                            <div id="extractor-tags-output" class="text-text-secondary bg-bg-primary p-4 rounded-lg min-h-[80px]"></div>
+                        </div>
+                    </div>
+                </div>`,
+            'tags-generator': `
+                 <div class="max-w-4xl mx-auto">
+                    <header class="mb-8"><h2 class="text-3xl font-extrabold">Video Tags Generator</h2><p class="text-text-secondary mt-1">Generate optimized tags from a YouTube video URL.</p></header>
+                    <div class="result-card p-6 mb-8">
+                        <label for="tags-url-input" class="block text-lg font-semibold mb-3 text-accent-primary">YouTube Video URL</label>
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <input type="text" id="tags-url-input" class="w-full custom-input" placeholder="e.g., https://www.youtube.com/watch?v=...">
+                            <button id="generate-tags-from-url-btn" class="main-btn py-3 px-6 flex items-center justify-center whitespace-nowrap"><i class="fas fa-tags mr-2"></i><span class="btn-text">Generate Tags</span><div class="spinner hidden w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div></button>
+                        </div>
+                    </div>
+                    <div id="tags-generator-results-wrapper" class="result-card p-6 hidden">
+                        <div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold">Generated Tags</h3><button class="copy-btn text-text-secondary hover:text-accent-primary" title="Copy Tags" id="copy-generated-tags-btn"><i class="fas fa-copy text-lg"></i></button></div>
+                        <div id="tags-generator-output" class="text-text-secondary bg-bg-primary p-4 rounded-lg min-h-[80px]"></div>
+                    </div>
+                </div>`,
+            'keyword-suggester': `
+                 <div class="max-w-4xl mx-auto">
+                    <header class="mb-8"><h2 class="text-3xl font-extrabold">Keyword Suggester</h2><p class="text-text-secondary mt-1">Get relevant keywords for your video topic.</p></header>
+                    <div class="result-card p-6 mb-8">
+                        <label for="keyword-suggester-input" class="block text-lg font-semibold mb-3 text-accent-primary">Video Title or Topic</label>
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <input type="text" id="keyword-suggester-input" class="w-full custom-input" placeholder="e.g., 'Best budget gaming laptops 2025'">
+                            <button id="generate-keywords-btn" class="main-btn py-3 px-6 flex items-center justify-center whitespace-nowrap"><i class="fas fa-key mr-2"></i><span class="btn-text">Suggest Keywords</span><div class="spinner hidden w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div></button>
+                        </div>
+                    </div>
+                    <div id="keyword-suggester-results-wrapper" class="result-card p-6 hidden">
+                        <div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold">Suggested Keywords</h3><button class="copy-btn text-text-secondary hover:text-accent-primary" title="Copy Keywords" id="copy-suggested-keywords-btn"><i class="fas fa-copy text-lg"></i></button></div>
+                        <div id="keyword-suggester-output" class="text-text-secondary bg-bg-primary p-4 rounded-lg min-h-[80px]"></div>
+                    </div>
+                </div>`,
+            'thumbnail-downloader': `
+                 <div class="max-w-4xl mx-auto">
+                    <header class="mb-8"><h2 class="text-3xl font-extrabold">Thumbnail Downloader</h2><p class="text-text-secondary mt-1">Download any YouTube video's thumbnail in high quality.</p></header>
+                    <div class="result-card p-6 mb-8">
+                        <label for="thumbnail-url-input" class="block text-lg font-semibold mb-3 text-accent-primary">YouTube Video URL</label>
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <input type="text" id="thumbnail-url-input" class="w-full custom-input" placeholder="e.g., https://www.youtube.com/watch?v=...">
+                            <button id="get-thumbnail-btn" class="main-btn py-3 px-6 flex items-center justify-center whitespace-nowrap"><i class="fas fa-image mr-2"></i><span class="btn-text">Get Thumbnail</span><div class="spinner hidden w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div></button>
+                        </div>
+                    </div>
+                    <div id="thumbnail-downloader-results-wrapper" class="result-card p-6 hidden text-center">
+                        <h3 class="text-xl font-bold mb-4">Your Thumbnail</h3>
+                        <img id="thumbnail-downloader-output" src="" alt="Video Thumbnail" class="w-full max-w-md mx-auto rounded-lg">
+                        <button id="download-standalone-thumbnail-btn" class="main-btn py-2 px-5 mt-4 inline-flex items-center"><i class="fas fa-download mr-2"></i>Download Thumbnail</button>
+                    </div>
+                </div>`,
+            'find-competitors': `
+                 <div class="max-w-4xl mx-auto">
+                    <header class="mb-8"><h2 class="text-3xl font-extrabold">Find Competitors</h2><p class="text-text-secondary mt-1">Get AI-powered analysis of competitor channels.</p></header>
+                    <div class="result-card p-6 mb-8">
+                        <label for="competitor-topic-input" class="block text-lg font-semibold mb-3 text-accent-primary">Channel URL or Handle</label>
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <input type="text" id="competitor-topic-input" class="w-full custom-input" placeholder="e.g., https://www.youtube.com/@MrBeast">
+                            <button id="find-competitors-btn" class="main-btn py-3 px-6 flex items-center justify-center whitespace-nowrap"><i class="fas fa-users mr-2"></i><span class="btn-text">Find Competitors</span><div class="spinner hidden w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div></button>
+                        </div>
+                        <p class="text-xs text-text-secondary mt-3 text-center">Note: All data is AI-estimated for analytical purposes only.</p>
+                    </div>
+                    <div id="competitor-results-wrapper" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden">
+                        <!-- Competitor cards will be injected here -->
+                    </div>
+                </div>`,
+            'subscribe-link': `
+                <div class="max-w-4xl mx-auto">
+                    <header class="mb-8"><h2 class="text-3xl font-extrabold">Subscribe Link Generator</h2><p class="text-text-secondary mt-1">Create a link that prompts users to subscribe.</p></header>
+                    <div class="result-card p-6 mb-8">
+                        <label for="subscribe-url-input" class="block text-lg font-semibold mb-3 text-accent-primary">Your YouTube Channel URL</label>
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <input type="text" id="subscribe-url-input" class="w-full custom-input" placeholder="e.g., https://www.youtube.com/channel/...">
+                            <button id="generate-subscribe-link-btn" class="main-btn py-3 px-6 flex items-center justify-center whitespace-nowrap"><i class="fas fa-link mr-2"></i><span class="btn-text">Generate Link</span></button>
+                        </div>
+                    </div>
+                    <div id="subscribe-link-results-wrapper" class="result-card p-6 hidden">
+                        <div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold">Your Subscribe Link</h3><button class="copy-btn text-text-secondary hover:text-accent-primary" title="Copy Link" id="copy-subscribe-link-btn"><i class="fas fa-copy text-lg"></i></button></div>
+                        <div id="subscribe-link-output" class="text-text-secondary bg-bg-primary p-4 rounded-lg break-all"></div>
+                    </div>
+                </div>`,
+            'money-calculator': `
+                <div class="max-w-4xl mx-auto">
+                    <header class="mb-8"><h2 class="text-3xl font-extrabold">YouTube Money Calculator</h2><p class="text-text-secondary mt-1">Estimate your potential earnings.</p></header>
+                    <div class="result-card p-6 mb-8">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div><label for="calculator-views-input" class="block text-sm font-semibold mb-2 text-accent-primary">Daily Views</label><input type="number" id="calculator-views-input" class="w-full custom-input" placeholder="e.g., 50000"></div>
+                            <div><label for="calculator-rpm-input" class="block text-sm font-semibold mb-2 text-accent-primary">Estimated RPM ($)</label><input type="number" id="calculator-rpm-input" class="w-full custom-input" placeholder="e.g., 1.50"></div>
+                        </div>
+                    </div>
+                    <div id="calculator-results-wrapper" class="grid grid-cols-1 md:grid-cols-3 gap-6 hidden">
+                        <div class="result-card p-6 text-center"><p class="text-text-secondary text-sm">Est. Daily Earnings</p><p id="calculator-daily-output" class="text-2xl font-bold text-accent-primary mt-1">$0.00</p></div>
+                        <div class="result-card p-6 text-center"><p class="text-text-secondary text-sm">Est. Monthly Earnings</p><p id="calculator-monthly-output" class="text-2xl font-bold text-accent-primary mt-1">$0.00</p></div>
+                        <div class="result-card p-6 text-center"><p class="text-text-secondary text-sm">Est. Yearly Earnings</p><p id="calculator-yearly-output" class="text-2xl font-bold text-accent-primary mt-1">$0.00</p></div>
+                    </div>
+                </div>`,
+            'title-capitalizer': `
+                <div class="max-w-4xl mx-auto">
+                    <header class="mb-8"><h2 class="text-3xl font-extrabold">Video Title Capitalizer</h2><p class="text-text-secondary mt-1">Properly capitalize your video titles.</p></header>
+                    <div class="result-card p-6 mb-8">
+                        <label for="capitalize-input" class="block text-lg font-semibold mb-3 text-accent-primary">Enter Title Here</label>
+                        <textarea id="capitalize-input" class="w-full custom-input min-h-[100px]" placeholder="e.g., my awesome new video about tech"></textarea>
+                        <button id="capitalize-btn" class="main-btn w-full mt-4 py-3 px-6 flex items-center justify-center"><i class="fas fa-text-height mr-2"></i><span class="btn-text">Capitalize Title</span></button>
+                    </div>
+                    <div id="capitalize-results-wrapper" class="result-card p-6 hidden">
+                        <div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold">Capitalized Title</h3><button class="copy-btn text-text-secondary hover:text-accent-primary" title="Copy Title" id="copy-capitalized-btn"><i class="fas fa-copy text-lg"></i></button></div>
+                        <div id="capitalize-output" class="text-text-secondary bg-bg-primary p-4 rounded-lg"></div>
+                    </div>
+                </div>`,
+            'embed-code': `
+                <div class="max-w-4xl mx-auto">
+                    <header class="mb-8"><h2 class="text-3xl font-extrabold">YouTube Embed Code Generator</h2><p class="text-text-secondary mt-1">Create embed codes for your videos.</p></header>
+                    <div class="result-card p-6 mb-8">
+                        <label for="embed-url-input" class="block text-lg font-semibold mb-3 text-accent-primary">YouTube Video URL</label>
+                        <input type="text" id="embed-url-input" class="w-full custom-input" placeholder="e.g., https://www.youtube.com/watch?v=...">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                            <div><label for="embed-width-input" class="block text-sm font-semibold mb-2">Width</label><input type="text" id="embed-width-input" class="w-full custom-input" value="560"></div>
+                            <div><label for="embed-height-input" class="block text-sm font-semibold mb-2">Height</label><input type="text" id="embed-height-input" class="w-full custom-input" value="315"></div>
+                        </div>
+                        <button id="generate-embed-btn" class="main-btn w-full mt-4 py-3 px-6 flex items-center justify-center"><i class="fas fa-code mr-2"></i><span class="btn-text">Generate Code</span></button>
+                    </div>
+                    <div id="embed-results-wrapper" class="result-card p-6 hidden">
+                        <div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold">Embed Code</h3><button class="copy-btn text-text-secondary hover:text-accent-primary" title="Copy Code" id="copy-embed-btn"><i class="fas fa-copy text-lg"></i></button></div>
+                        <textarea id="embed-output" class="w-full custom-input min-h-[150px]" readonly></textarea>
+                    </div>
+                </div>`,
+        };
+
+        // --- State ---
+        let popupTimeout;
+        let generatedData = { 
+            title: '', description: '', tags: '', copyright: '', 
+            script: '', prompts: [], 
+            extractorTitle: '', extractorDesc: '', extractorTags: '', 
+            generatedTags: '', suggestedKeywords: '',
+            subscribeLink: '', capitalizedTitle: '', embedCode: ''
+        };
+        
+        const pages = {};
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            Object.keys(pageTemplates).forEach(pageId => {
+                pages[pageId] = document.getElementById(`page-${pageId}`);
+                const pageElement = pages[pageId];
+                if (pageElement && pageTemplates[pageId]) {
+                    pageElement.innerHTML = pageTemplates[pageId];
+                }
+            });
+
+            const mainNav = document.getElementById('main-nav');
+            const homeToolsGrid = document.getElementById('home-tools-grid');
+            
+            tools.forEach(tool => {
+                // Populate sidebar
+                const navLink = document.createElement('a');
+                navLink.href = '#';
+                navLink.id = `nav-${tool.id}`;
+                navLink.dataset.page = tool.id;
+                navLink.className = 'nav-trigger sidebar-link flex items-center gap-4 p-3 rounded-lg hover:bg-tertiary transition-colors';
+                navLink.innerHTML = `<i class="${tool.icon} fa-fw sidebar-icon"></i><span>${tool.name}</span>`;
+                mainNav.appendChild(navLink);
+
+                // Populate home page grid
+                if (homeToolsGrid) {
+                    const toolCard = document.createElement('a');
+                    toolCard.href = '#';
+                    toolCard.className = 'nav-trigger result-card p-6 hover:border-accent-primary transition-colors';
+                    toolCard.dataset.page = tool.id;
+                    toolCard.innerHTML = `
+                        <i class="${tool.icon} fa-2x text-accent-primary mb-4"></i>
+                        <h3 class="text-xl font-bold mb-2">${tool.name}</h3>
+                        <p class="text-text-secondary text-sm">${tool.description}</p>
+                    `;
+                    homeToolsGrid.appendChild(toolCard);
+                }
+            });
+
+            document.getElementById('nav-home').classList.add('active');
+            Object.keys(pages).filter(p => p !== 'home').forEach(p => pages[p].classList.add('hidden'));
+            pages['home'].classList.remove('hidden');
+
+            bindAllEventListeners();
+            startTypewriter();
+        });
+
+        // --- Event Listeners Binding ---
+        function bindAllEventListeners() {
+            const get = (id) => document.getElementById(id);
+
+            document.querySelectorAll('.nav-trigger').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const pageId = link.dataset.page;
+                    
+                    const sidebar = get('sidebar');
+                    const overlay = get('overlay');
+                    if(sidebar && !sidebar.classList.contains('-translate-x-full')) {
+                        toggleMenu();
+                    }
+
+                    if (pages[pageId]) {
+                        document.querySelectorAll('.sidebar-link').forEach(nav => nav.classList.remove('active'));
+                        get(`nav-${pageId}`)?.classList.add('active');
+                        Object.values(pages).forEach(page => page.classList.add('hidden'));
+                        pages[pageId].classList.remove('hidden');
+                    } else {
+                        showPopup("This tool is coming soon in a future update!", 'info');
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.coming-soon-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    showPopup("This page is coming soon!", 'info');
+                });
+            });
+
+            get('hamburger-btn')?.addEventListener('click', toggleMenu);
+            get('overlay')?.addEventListener('click', toggleMenu);
+
+            // Bind listeners for each page
+            get('generate-content-btn')?.addEventListener('click', handleContentGeneration);
+            get('copy-desc-btn')?.addEventListener('click', () => copyToClipboard(generatedData.description));
+            get('copy-tags-btn')?.addEventListener('click', () => copyToClipboard(generatedData.tags));
+            get('copy-copyright-btn')?.addEventListener('click', () => copyToClipboard(generatedData.copyright));
+
+            get('show-idea-helper-btn')?.addEventListener('click', () => get('idea-helper-ui').classList.toggle('hidden'));
+            get('generate-ideas-btn')?.addEventListener('click', handleIdeaGeneration);
+            get('generate-script-btn')?.addEventListener('click', handleScriptGeneration);
+            get('copy-script-btn')?.addEventListener('click', () => copyToClipboard(generatedData.script));
+
+            get('prompt-category-select')?.addEventListener('change', updatePromptStyles);
+            get('generate-prompt-btn')?.addEventListener('click', handlePromptGeneration);
+
+            get('extract-btn')?.addEventListener('click', handleExtraction);
+            get('download-thumbnail-btn')?.addEventListener('click', () => downloadImage(get('extractor-thumbnail-output').src, generatedData.extractorTitle));
+            get('copy-extractor-title-btn')?.addEventListener('click', () => copyToClipboard(generatedData.extractorTitle));
+            get('copy-extractor-desc-btn')?.addEventListener('click', () => copyToClipboard(generatedData.extractorDesc));
+            get('copy-extractor-tags-btn')?.addEventListener('click', () => copyToClipboard(generatedData.extractorTags));
+
+            get('generate-tags-from-url-btn')?.addEventListener('click', handleTagsFromUrlGeneration);
+            get('copy-generated-tags-btn')?.addEventListener('click', () => copyToClipboard(generatedData.generatedTags));
+
+            get('generate-keywords-btn')?.addEventListener('click', handleKeywordSuggestion);
+            get('copy-suggested-keywords-btn')?.addEventListener('click', () => copyToClipboard(generatedData.suggestedKeywords));
+
+            get('get-thumbnail-btn')?.addEventListener('click', handleThumbnailDownload);
+            get('download-standalone-thumbnail-btn')?.addEventListener('click', () => downloadImage(get('thumbnail-downloader-output').src, 'thumbnail'));
+
+            get('find-competitors-btn')?.addEventListener('click', handleFindCompetitors);
+
+            get('generate-subscribe-link-btn')?.addEventListener('click', handleSubscribeLink);
+            get('copy-subscribe-link-btn')?.addEventListener('click', () => copyToClipboard(generatedData.subscribeLink));
+
+            get('calculator-views-input')?.addEventListener('input', handleMoneyCalculation);
+            get('calculator-rpm-input')?.addEventListener('input', handleMoneyCalculation);
+
+            get('capitalize-btn')?.addEventListener('click', handleCapitalization);
+            get('copy-capitalized-btn')?.addEventListener('click', () => copyToClipboard(generatedData.capitalizedTitle));
+
+            get('generate-embed-btn')?.addEventListener('click', handleEmbedCodeGeneration);
+            get('copy-embed-btn')?.addEventListener('click', () => copyToClipboard(generatedData.embedCode));
+        }
+        
+
+        // --- Core Functions ---
+        function toggleMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
+        function toggleButtonLoading(button, isLoading) {
+            const btnText = button.querySelector('.btn-text');
+            const spinner = button.querySelector('.spinner');
+            button.disabled = isLoading;
+            if(btnText) btnText.style.display = isLoading ? 'none' : 'inline';
+            if(spinner) spinner.style.display = isLoading ? 'block' : 'none';
+        }
+
+        async function callGeminiAPI(prompt) {
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
+            const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
+            try {
+                const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    showPopup(`API Error: ${errorData.error.message}`, 'error');
+                    return null;
+                }
+                const result = await response.json();
+                return result.candidates?.[0]?.content?.parts?.[0]?.text || null;
+            } catch (error) {
+                showPopup("Failed to connect to the AI service.", 'error');
+                return null;
+            }
+        }
+
+        // --- Content Generation Logic ---
+        async function handleContentGeneration() {
+            const keyword = document.getElementById('content-keyword-input').value.trim();
+            if (!keyword) { showPopup("Please enter a topic first.", 'error'); return; }
+            toggleButtonLoading(document.getElementById('generate-content-btn'), true);
+            document.getElementById('content-results-wrapper').classList.add('hidden');
+            const titlesPrompt = `Generate 5 catchy, SEO-optimized YouTube video titles for 2025-2026 on the topic: "${keyword}". Separate each title with "|||". Do not use numbering.`;
+            const titlesResponse = await callGeminiAPI(titlesPrompt);
+            if (!titlesResponse) { toggleButtonLoading(document.getElementById('generate-content-btn'), false); return; }
+            const titles = titlesResponse.split('|||').map(t => t.trim()).filter(Boolean);
+            displayTitles(titles);
+            generatedData.title = titles[0] || keyword; 
+            const descPrompt = `Generate a long, SEO-friendly YouTube description for a 2025 video titled: "${generatedData.title}". Include a hook, summary, placeholder timestamps, placeholder links, and a call-to-action. Use emojis.`;
+            const tagsPrompt = `Generate up to 50 relevant, SEO-optimized YouTube tags for a video titled "${generatedData.title}". Include long-tail and short-tail keywords. The tags should be comma-separated.`;
+            const copyrightPrompt = `Generate a standard "fair use" copyright disclaimer for a YouTube video for use in 2025.`;
+            const [descResponse, tagsResponse, copyrightResponse] = await Promise.all([callGeminiAPI(descPrompt), callGeminiAPI(tagsPrompt), callGeminiAPI(copyrightPrompt)]);
+            if (descResponse) { generatedData.description = descResponse; document.getElementById('description-output').innerText = descResponse; }
+            if (tagsResponse) { generatedData.tags = tagsResponse; document.getElementById('tags-output').innerText = tagsResponse; }
+            if (copyrightResponse) { generatedData.copyright = copyrightResponse; document.getElementById('copyright-output').innerText = copyrightResponse; }
+            document.getElementById('content-results-wrapper').classList.remove('hidden');
+            toggleButtonLoading(document.getElementById('generate-content-btn'), false);
+        }
+
+        function displayTitles(titles) {
+            const titlesOutput = document.getElementById('titles-output');
+            titlesOutput.innerHTML = '';
+            titles.forEach(title => {
+                const titleEl = document.createElement('div');
+                titleEl.className = 'flex justify-between items-center bg-bg-primary p-3 rounded-lg';
+                titleEl.innerHTML = `<span class="flex-grow mr-4">${title}</span><button class="copy-btn text-text-secondary hover:text-accent-primary flex-shrink-0" title="Copy Title"><i class="fas fa-copy"></i></button>`;
+                titleEl.querySelector('.copy-btn').addEventListener('click', () => copyToClipboard(title));
+                titlesOutput.appendChild(titleEl);
+            });
+        }
+        
+        // --- Script Generation Logic ---
+        async function handleIdeaGeneration() {
+            const category = document.getElementById('idea-category-select').value;
+            const keyword = document.getElementById('idea-keyword-input').value.trim();
+            if (!keyword) { showPopup("Please enter a keyword for your idea.", 'error'); return; }
+            toggleButtonLoading(document.getElementById('generate-ideas-btn'), true);
+            document.getElementById('ideas-output').innerHTML = '';
+            const prompt = `Based on the category "${category}" and the keyword "${keyword}", generate 5 unique and engaging YouTube video ideas. The ideas should be concise and serve as potential video titles. Separate each idea with "|||".`;
+            const response = await callGeminiAPI(prompt);
+            if (response) {
+                const ideas = response.split('|||').map(i => i.trim()).filter(Boolean);
+                displayIdeas(ideas);
+            }
+            toggleButtonLoading(document.getElementById('generate-ideas-btn'), false);
+        }
+
+        function displayIdeas(ideas) {
+            const ideasOutput = document.getElementById('ideas-output');
+            const scriptTopicInput = document.getElementById('script-topic-input');
+            const ideaHelperUI = document.getElementById('idea-helper-ui');
+            ideasOutput.innerHTML = '';
+            ideas.forEach(ideaText => {
+                const ideaBtn = document.createElement('button');
+                ideaBtn.className = 'w-full text-left p-3 bg-bg-tertiary rounded-lg hover:bg-accent-primary hover:text-bg-primary transition-colors';
+                ideaBtn.textContent = ideaText;
+                ideaBtn.addEventListener('click', () => {
+                    scriptTopicInput.value = ideaText;
+                    scriptTopicInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    ideaHelperUI.classList.add('hidden');
+                });
+                ideasOutput.appendChild(ideaBtn);
+            });
+        }
+
+        async function handleScriptGeneration() {
+            const topic = document.getElementById('script-topic-input').value.trim();
+            const language = document.getElementById('script-language-select').value;
+            const type = document.getElementById('script-type-select').value;
+            const tone = document.getElementById('script-tone-select').value;
+            const words = document.getElementById('script-words-input').value.trim();
+            if (!topic || !words) { showPopup("Please fill all fields.", 'error'); return; }
+            toggleButtonLoading(document.getElementById('generate-script-btn'), true);
+            document.getElementById('script-results-wrapper').classList.add('hidden');
+            const prompt = `You are an expert YouTube scriptwriter. Your task is to generate a complete video script based on the following specifications. **Topic**: "${topic}", **Language**: **${language}**, **Script Type**: **${type}**, **Tone**: **${tone}**, **Word Count**: Approximately **${words}** words. **Crucial Requirement**: The script MUST begin with a powerful, engaging hook within the first 15-30 seconds designed to grab the viewer's attention immediately. **Structural Guidance for Script Type "${type}":** - If "Training/Tutorial" or "How-To Guide", structure with clear, step-by-step instructions. - If "Explainer Video" or "Tech Explainer", break down the complex topic into simple, digestible sections. Start with the problem, then present the solution/explanation. - If "Listicle", format the main content as a numbered list (e.g., "Number 5:", "Number 4:", etc.). - If "Product Demo" or "Review", structure around key features, pros, and cons, and a final verdict. - If "Vlog", write in a personal, conversational, first-person style. - If "Interview", format as a Q&A between an "Interviewer" and "Guest". - For all other types, use a standard intro-body-conclusion format suitable for the selected tone. **Formatting (Strict):** Use timestamps for different sections (e.g., 00:00 - 00:15). Include placeholders for visuals or actions in parentheses, like (Show B-roll of a circuit board). Generate the script now.`;
+            const scriptResponse = await callGeminiAPI(prompt);
+            if (scriptResponse) {
+                generatedData.script = scriptResponse;
+                document.getElementById('script-output').innerText = scriptResponse;
+                document.getElementById('script-results-wrapper').classList.remove('hidden');
+            }
+            toggleButtonLoading(document.getElementById('generate-script-btn'), false);
+        }
+
+        // --- Prompt Generation Logic ---
+        const promptStyles = {
+            'text-to-image': {'Mixed-Media Portrait': `...`,'3D Cartoon Horror-Comedy': `...`},
+            'text-to-video': {'Animated Sci-Fi Horror Story': `...`,'100 Faceless 2D Animation Ideas': `...`},
+            'general-ai': {'Zero-Shot': '...','One-Shot': '...','Few-Shot': '...','Chain of Thought': '...','Role-Playing': '...','Text Summarization': '...'}
+        };
+
+        function updatePromptStyles() {
+            const promptCategorySelect = document.getElementById('prompt-category-select');
+            const promptStyleSelect = document.getElementById('prompt-style-select');
+            const category = promptCategorySelect.value;
+            promptStyleSelect.innerHTML = '';
+            promptStyleSelect.disabled = true;
+            if (category && promptStyles[category]) {
+                promptStyleSelect.disabled = false;
+                promptStyleSelect.innerHTML = '<option value="">-- Select a Style --</option>';
+                for (const style in promptStyles[category]) {
+                    const option = document.createElement('option');
+                    option.value = style;
+                    option.textContent = style;
+                    promptStyleSelect.appendChild(option);
+                }
+            } else {
+                promptStyleSelect.innerHTML = '<option>-- Select Category First --</option>';
+            }
+        }
+
+        async function handlePromptGeneration() {
+            const topic = document.getElementById('prompt-topic-input').value.trim();
+            const category = document.getElementById('prompt-category-select').value;
+            const style = document.getElementById('prompt-style-select').value;
+            const quantity = document.getElementById('prompt-quantity-input').value;
+            if (!topic || !category || !style) { showPopup("Please fill all fields.", 'error'); return; }
+            toggleButtonLoading(document.getElementById('generate-prompt-btn'), true);
+            const promptResultsWrapper = document.getElementById('prompt-results-wrapper');
+            promptResultsWrapper.innerHTML = '';
+            promptResultsWrapper.classList.add('hidden');
+            const masterPrompt = `You are an expert prompt engineer. The user wants to generate ${quantity} prompt(s). Their topic is: "${topic}". The prompt style they need is: "${style}". Based on this style description: "${promptStyles[category][style]}" Generate ${quantity} unique, detailed, and ready-to-use prompt(s) that apply this style to the user's topic. IMPORTANT: Separate each distinct prompt with the delimiter "|||---|||". Do not include any other text or numbering outside of the prompts themselves.`;
+            const response = await callGeminiAPI(masterPrompt);
+            if (response) {
+                generatedData.prompts = response.split('|||---|||').map(p => p.trim()).filter(Boolean);
+                displayPrompts(generatedData.prompts);
+                promptResultsWrapper.classList.remove('hidden');
+            }
+            toggleButtonLoading(document.getElementById('generate-prompt-btn'), false);
+        }
+        
+        function displayPrompts(prompts) {
+            const promptResultsWrapper = document.getElementById('prompt-results-wrapper');
+            promptResultsWrapper.innerHTML = '';
+            prompts.forEach((promptText, index) => {
+                const promptCard = document.createElement('div');
+                promptCard.className = 'result-card p-6 fade-in';
+                promptCard.innerHTML = `<div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold text-text-primary">Prompt #${index + 1}</h3><button class="copy-btn text-text-secondary hover:text-accent-primary" title="Copy Prompt"><i class="fas fa-copy text-lg"></i></button></div><div class="text-text-secondary whitespace-pre-wrap bg-bg-primary p-4 rounded-lg">${promptText}</div>`;
+                promptCard.querySelector('.copy-btn').addEventListener('click', () => copyToClipboard(promptText));
+                promptResultsWrapper.appendChild(promptCard);
+            });
+        }
+
+        // --- Channel Extractor Logic ---
+        async function handleExtraction() {
+            const url = document.getElementById('extractor-url-input').value.trim();
+            if (!url) { showPopup("Please enter a YouTube URL.", 'error'); return; }
+            const videoId = getYouTubeID(url);
+            if (!videoId) { showPopup("Invalid YouTube URL.", 'error'); return; }
+            toggleButtonLoading(document.getElementById('extract-btn'), true);
+            document.getElementById('extractor-results-wrapper').classList.add('hidden');
+            const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+            document.getElementById('extractor-thumbnail-output').src = thumbnailUrl;
+            document.getElementById('extractor-thumbnail-output').onerror = () => { document.getElementById('extractor-thumbnail-output').src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`; };
+            let title = await getVideoTitle(videoId);
+            if (!title) { toggleButtonLoading(document.getElementById('extract-btn'), false); return; }
+            generatedData.extractorTitle = title;
+            document.getElementById('extractor-title-output').innerText = title;
+            const descPrompt = `Generate a long, SEO-friendly YouTube description for a video titled: "${title}". Include a hook, summary, placeholder timestamps, placeholder links, and a call-to-action. Use emojis.`;
+            const tagsPrompt = `Generate up to 50 relevant, SEO-optimized YouTube tags for a video titled "${title}". Include long-tail and short-tail keywords. The tags should be comma-separated.`;
+            const [descResponse, tagsResponse] = await Promise.all([callGeminiAPI(descPrompt), callGeminiAPI(tagsPrompt)]);
+            if (descResponse) { generatedData.extractorDesc = descResponse; document.getElementById('extractor-desc-output').innerText = descResponse; }
+            if (tagsResponse) { generatedData.extractorTags = tagsResponse; document.getElementById('extractor-tags-output').innerText = tagsResponse; }
+            document.getElementById('extractor-results-wrapper').classList.remove('hidden');
+            toggleButtonLoading(document.getElementById('extract-btn'), false);
+        }
+
+        // --- Tags Generator from URL Logic ---
+        async function handleTagsFromUrlGeneration() {
+            const url = document.getElementById('tags-url-input').value.trim();
+            if (!url) { showPopup("Please enter a YouTube URL.", 'error'); return; }
+            const videoId = getYouTubeID(url);
+            if (!videoId) { showPopup("Invalid YouTube URL.", 'error'); return; }
+            toggleButtonLoading(document.getElementById('generate-tags-from-url-btn'), true);
+            document.getElementById('tags-generator-results-wrapper').classList.add('hidden');
+            let title = await getVideoTitle(videoId);
+            if (!title) { toggleButtonLoading(document.getElementById('generate-tags-from-url-btn'), false); return; }
+            const tagsPrompt = `Generate up to 50 relevant, SEO-optimized YouTube tags for a video titled "${title}". Include long-tail and short-tail keywords. The tags should be comma-separated.`;
+            const tagsResponse = await callGeminiAPI(tagsPrompt);
+            if (tagsResponse) {
+                generatedData.generatedTags = tagsResponse;
+                document.getElementById('tags-generator-output').innerText = tagsResponse;
+                document.getElementById('tags-generator-results-wrapper').classList.remove('hidden');
+            }
+            toggleButtonLoading(document.getElementById('generate-tags-from-url-btn'), false);
+        }
+
+        // --- Keyword Suggester Logic ---
+        async function handleKeywordSuggestion() {
+            const topic = document.getElementById('keyword-suggester-input').value.trim();
+            if (!topic) { showPopup("Please enter a topic.", 'error'); return; }
+            toggleButtonLoading(document.getElementById('generate-keywords-btn'), true);
+            document.getElementById('keyword-suggester-results-wrapper').classList.add('hidden');
+            const prompt = `Generate a list of relevant SEO keywords and tags for a YouTube video about "${topic}". Include a mix of short-tail and long-tail keywords. The output should be a single, comma-separated list.`;
+            const response = await callGeminiAPI(prompt);
+            if(response) {
+                generatedData.suggestedKeywords = response;
+                document.getElementById('keyword-suggester-output').innerText = response;
+                document.getElementById('keyword-suggester-results-wrapper').classList.remove('hidden');
+            }
+            toggleButtonLoading(document.getElementById('generate-keywords-btn'), false);
+        }
+
+        // --- Thumbnail Downloader Logic ---
+        function handleThumbnailDownload() {
+            const url = document.getElementById('thumbnail-url-input').value.trim();
+            if (!url) { showPopup("Please enter a YouTube URL.", 'error'); return; }
+            const videoId = getYouTubeID(url);
+            if (!videoId) { showPopup("Invalid YouTube URL.", 'error'); return; }
+            const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+            const outputImg = document.getElementById('thumbnail-downloader-output');
+            outputImg.src = thumbnailUrl;
+            outputImg.onerror = () => { outputImg.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`; };
+            document.getElementById('thumbnail-downloader-results-wrapper').classList.remove('hidden');
+        }
+
+        // --- Find Competitors Logic ---
+        async function handleFindCompetitors() {
+            const topic = document.getElementById('competitor-topic-input').value.trim();
+            if (!topic) { showPopup("Please enter a channel name or topic.", 'error'); return; }
+            toggleButtonLoading(document.getElementById('find-competitors-btn'), true);
+            const competitorResultsWrapper = document.getElementById('competitor-results-wrapper');
+            competitorResultsWrapper.innerHTML = '';
+            competitorResultsWrapper.classList.remove('hidden'); 
+            competitorResultsWrapper.innerHTML = `<div class="col-span-1 lg:col-span-3 flex justify-center items-center p-8"><div class="w-8 h-8 border-4 border-accent-primary border-t-transparent rounded-full animate-spin"></div></div>`;
+            const prompt = `Act as a YouTube channel analyst. Based on the channel topic or name "${topic}", find 10 similar competitor channels. For each channel, provide: Channel Name, a clean version of the channel name for its handle (e.g., "@channelname"), Estimated Subscribers (e.g., "5.2M"), Estimated Total Videos (e.g., "~150"), and Estimated Total Views (e.g., "~10M"). Format the response strictly as follows, with each channel's data on a new line and separated by a pipe "|". Separate each channel block with "|||---|||". Example: Channel Name: Example Channel 1 | Handle: examplechannel1 | Subscribers: ~5.2M | Total Videos: ~150 | Total Views: ~10M`;
+            const response = await callGeminiAPI(prompt);
+            if (response) {
+                const competitors = response.split('|||---|||').map(c => c.trim()).filter(Boolean);
+                displayCompetitors(competitors);
+            } else {
+                 competitorResultsWrapper.innerHTML = `<p class="col-span-1 lg:col-span-3 text-center text-text-secondary">Could not find competitors. Please try a different topic.</p>`;
+            }
+            toggleButtonLoading(document.getElementById('find-competitors-btn'), false);
+        }
+
+        function displayCompetitors(competitors) {
+            const competitorResultsWrapper = document.getElementById('competitor-results-wrapper');
+            competitorResultsWrapper.innerHTML = '';
+            competitors.forEach(competitorText => {
+                const competitorData = {};
+                competitorText.split('|').forEach(part => {
+                    const [key, ...value] = part.split(':');
+                    if (key && value) competitorData[key.trim()] = value.join(':').trim();
+                });
+                const channelName = competitorData['Channel Name'] || 'N/A';
+                const handle = (competitorData['Handle'] || channelName.replace(/\s+/g, '')).replace('@', '');
+                const channelUrl = `https://www.youtube.com/@${handle}`;
+                const profilePicUrl = `https://unavatar.io/youtube/${handle}`;
+                const card = document.createElement('div');
+                card.className = 'result-card p-4 fade-in flex flex-col';
+                card.innerHTML = `
+                    <a href="${channelUrl}" target="_blank" class="block mb-4">
+                        <img src="${profilePicUrl}" onerror="this.onerror=null;this.src='https://placehold.co/300x150/1A1A1A/00FFA3?text=${handle.substring(0,2).toUpperCase()}';" alt="${channelName}" class="w-full rounded-lg aspect-video object-cover">
+                    </a>
+                    <h4 class="text-md font-bold text-accent-primary truncate">${channelName}</h4>
+                    <div class="mt-2 text-xs space-y-1 text-text-secondary flex-grow">
+                        <p><i class="fas fa-users fa-fw mr-2"></i>${competitorData['Subscribers'] || 'N/A'}</p>
+                        <p><i class="fas fa-video fa-fw mr-2"></i>${competitorData['Total Videos'] || 'N/A'}</p>
+                        <p><i class="fas fa-eye fa-fw mr-2"></i>${competitorData['Total Views'] || 'N/A'}</p>
+                    </div>`;
+                competitorResultsWrapper.appendChild(card);
+            });
+        }
+        
+        // --- New Tools Logic ---
+        function handleSubscribeLink() {
+            const urlInput = document.getElementById('subscribe-url-input');
+            let url = urlInput.value.trim();
+            if (!url) { showPopup("Please enter a channel URL.", 'error'); return; }
+            if (url.includes('?')) {
+                url = url.substring(0, url.indexOf('?'));
+            }
+            const subscribeUrl = `${url}?sub_confirmation=1`;
+            generatedData.subscribeLink = subscribeUrl;
+            document.getElementById('subscribe-link-output').innerText = subscribeUrl;
+            document.getElementById('subscribe-link-results-wrapper').classList.remove('hidden');
+        }
+
+        function handleMoneyCalculation() {
+            const views = parseFloat(document.getElementById('calculator-views-input').value) || 0;
+            const rpm = parseFloat(document.getElementById('calculator-rpm-input').value) || 0;
+            const daily = (views / 1000) * rpm;
+            const monthly = daily * 30;
+            const yearly = daily * 365;
+            document.getElementById('calculator-daily-output').innerText = `$${daily.toFixed(2)}`;
+            document.getElementById('calculator-monthly-output').innerText = `$${monthly.toFixed(2)}`;
+            document.getElementById('calculator-yearly-output').innerText = `$${yearly.toFixed(2)}`;
+            document.getElementById('calculator-results-wrapper').classList.remove('hidden');
+        }
+
+        function handleCapitalization() {
+            const input = document.getElementById('capitalize-input').value.trim();
+            if (!input) { showPopup("Please enter a title.", 'error'); return; }
+            const capitalized = input.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+            generatedData.capitalizedTitle = capitalized;
+            document.getElementById('capitalize-output').innerText = capitalized;
+            document.getElementById('capitalize-results-wrapper').classList.remove('hidden');
+        }
+
+        function handleEmbedCodeGeneration() {
+            const url = document.getElementById('embed-url-input').value.trim();
+            const width = document.getElementById('embed-width-input').value;
+            const height = document.getElementById('embed-height-input').value;
+            if (!url) { showPopup("Please enter a video URL.", 'error'); return; }
+            const videoId = getYouTubeID(url);
+            if (!videoId) { showPopup("Invalid YouTube URL.", 'error'); return; }
+            const embedCode = `<iframe width="${width}" height="${height}" src="https://www.youtube.com/embed/${videoId}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+            generatedData.embedCode = embedCode;
+            document.getElementById('embed-output').value = embedCode;
+            document.getElementById('embed-results-wrapper').classList.remove('hidden');
+        }
+
+        // --- Typewriter Effect ---
+        function startTypewriter() {
+            const animatedText = document.getElementById('animated-text');
+            if (!animatedText) return;
+
+            const phrases = ["A Free Marketplace for AI Tools", "Powered by Team Mustafa Talks", "Powered by The Talks Automation"];
+            let phraseIndex = 0;
+            let charIndex = 0;
+            let isDeleting = false;
+
+            function type() {
+                const currentPhrase = phrases[phraseIndex];
+                if (isDeleting) {
+                    animatedText.textContent = currentPhrase.substring(0, charIndex - 1);
+                    charIndex--;
+                } else {
+                    animatedText.textContent = currentPhrase.substring(0, charIndex + 1);
+                    charIndex++;
+                }
+
+                let typeSpeed = isDeleting ? 50 : 150;
+
+                if (!isDeleting && charIndex === currentPhrase.length) {
+                    typeSpeed = 2000; // Pause at end
+                    isDeleting = true;
+                } else if (isDeleting && charIndex === 0) {
+                    isDeleting = false;
+                    phraseIndex = (phraseIndex + 1) % phrases.length;
+                    typeSpeed = 500; // Pause before new phrase
+                }
+
+                setTimeout(type, typeSpeed);
+            }
+            type();
+        }
+
+
+        // --- Utility Functions ---
+        async function getVideoTitle(videoId) {
+            try {
+                const oembedUrl = `https://noembed.com/embed?url=https://www.youtube.com/watch?v=${videoId}`;
+                const response = await fetch(oembedUrl);
+                const data = await response.json();
+                if (data.title) return data.title;
+                else throw new Error("Title not found");
+            } catch (error) {
+                console.error("Failed to fetch title:", error);
+                showPopup("Could not fetch video title.", "error");
+                return null;
+            }
+        }
+
+        function getYouTubeID(url) {
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+        
+        async function downloadImage(imageSrc, fileName) {
+            try {
+                const response = await fetch(imageSrc);
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                const safeFileName = fileName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+                a.download = `${safeFileName}.jpg`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            } catch (error) {
+                console.error("Download failed:", error);
+                showPopup("Failed to download image.", "error");
+            }
+        }
+
+        function copyToClipboard(text) {
+            if (!text) return;
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-9999px';
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showPopup("Copied to clipboard!", 'success');
+            } catch (err) {
+                showPopup("Failed to copy.", 'error');
+            }
+            document.body.removeChild(textArea);
+        }
+
+        function showPopup(message, type = 'success') {
+            clearTimeout(popupTimeout);
+            const popup = document.getElementById('popup');
+            const popupText = document.getElementById('popup-text');
+            popupText.innerText = message;
+            popup.className = 'fixed bottom-5 right-5 text-white p-4 rounded-xl shadow-2xl z-50 transition-all duration-300 transform';
+            const typeClasses = { success: 'bg-green-600', error: 'bg-red-600', info: 'bg-blue-600' };
+            popup.classList.add(typeClasses[type] || 'bg-green-600');
+            popup.classList.remove('translate-y-20', 'opacity-0');
+            popup.classList.add('translate-y-0', 'opacity-100');
+            popupTimeout = setTimeout(() => {
+                popup.classList.remove('translate-y-0', 'opacity-100');
+                popup.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
