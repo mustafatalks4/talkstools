@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -221,6 +222,9 @@
             <main id="page-title-capitalizer" class="p-4 sm:p-6 md:p-8 hidden"></main>
             <main id="page-embed-code" class="p-4 sm:p-6 md:p-8 hidden"></main>
             <main id="page-blog-post-generator" class="p-4 sm:p-6 md:p-8 hidden"></main>
+            <main id="page-image-compressor" class="p-4 sm:p-6 md:p-8 hidden"></main>
+            <main id="page-background-remover" class="p-4 sm:p-6 md:p-8 hidden"></main>
+            <main id="page-thumbnail-maker" class="p-4 sm:p-6 md:p-8 hidden"></main>
             
             <footer class="text-center p-6 mt-8 border-t border-border-color">
                 <div class="max-w-md mx-auto mb-6">
@@ -232,7 +236,7 @@
                         2. Create a new form and get your unique endpoint URL.
                         3. Replace the placeholder URL in the 'action' attribute below with your Formspree URL.
                     -->
-                    <form action="https://formspree.io/f/YOUR_UNIQUE_ID" method="POST" class="flex flex-col sm:flex-row gap-2">
+                    <form action="https://formspree.io/f/xanjkgrd" method="POST" class="flex flex-col sm:flex-row gap-2">
                         <input type="email" name="email" class="w-full custom-input" placeholder="Enter your email" required>
                         <button type="submit" class="main-btn py-3 px-6 whitespace-nowrap">Notify Me</button>
                     </form>
@@ -263,7 +267,7 @@
         
         // --- Maintenance Mode ---
         // Set to 'true' to enable maintenance mode, 'false' to disable.
-        const isMaintenanceMode = false;
+        const isMaintenanceMode = true;
 
         // --- Tool Definitions ---
         const tools = [
@@ -279,7 +283,10 @@
             { id: 'subscribe-link', name: 'Subscribe Link', icon: 'fas fa-link', description: 'Create a link that prompts users to subscribe to your channel.' },
             { id: 'money-calculator', name: 'Money Calculator', icon: 'fas fa-calculator', description: 'Estimate your potential YouTube earnings based on views and RPM.' },
             { id: 'title-capitalizer', name: 'Title Capitalizer', icon: 'fas fa-text-height', description: 'Properly capitalize your video titles with a single click.' },
-            { id: 'embed-code', name: 'Embed Code', icon: 'fas fa-code', description: 'Generate HTML embed codes for your YouTube videos.' }
+            { id: 'embed-code', name: 'Embed Code', icon: 'fas fa-code', description: 'Generate HTML embed codes for your YouTube videos.' },
+            { id: 'thumbnail-maker', name: 'Thumbnail Maker', icon: 'fas fa-crop-alt', description: 'Create stunning thumbnails for your videos.' },
+            { id: 'image-compressor', name: 'Image Compressor', icon: 'fas fa-compress-arrows-alt', description: 'Compress images while maintaining high quality.' },
+            { id: 'background-remover', name: 'Background Remover', icon: 'fas fa-eraser', description: 'Remove the background from any image.' },
         ];
 
         // --- Page Templates ---
@@ -546,6 +553,9 @@
                         <div id="blog-prompts-results-wrapper" class="result-card p-6 hidden"><h3 class="text-2xl font-bold mb-4">Image Prompts</h3><div id="blog-prompts-output" class="space-y-4"></div></div>
                     </div>
                 </div>`,
+            'image-compressor':`<div class="max-w-4xl mx-auto"><header class="mb-8 flex items-center gap-4"><button class="nav-trigger secondary-btn p-2 h-10 w-10" data-page="home"><i class="fas fa-arrow-left"></i></button><div><h2 class="text-3xl font-extrabold">Image Compressor</h2><p class="text-text-secondary mt-1">This tool is coming soon.</p></div></header></div>`,
+            'background-remover':`<div class="max-w-4xl mx-auto"><header class="mb-8 flex items-center gap-4"><button class="nav-trigger secondary-btn p-2 h-10 w-10" data-page="home"><i class="fas fa-arrow-left"></i></button><div><h2 class="text-3xl font-extrabold">Background Remover</h2><p class="text-text-secondary mt-1">This tool is coming soon.</p></div></header></div>`,
+            'thumbnail-maker':`<div class="max-w-4xl mx-auto"><header class="mb-8 flex items-center gap-4"><button class="nav-trigger secondary-btn p-2 h-10 w-10" data-page="home"><i class="fas fa-arrow-left"></i></button><div><h2 class="text-3xl font-extrabold">AI Thumbnail Maker</h2><p class="text-text-secondary mt-1">This tool is coming soon.</p></div></header></div>`,
         };
 
         // --- State ---
@@ -615,9 +625,9 @@
                 const preloader = document.getElementById('preloader');
                 if (preloader) {
                     preloader.style.opacity = '0';
-                    setTimeout(() => preloader.style.display = 'none', 500);
+                    setTimeout(() => preloader.style.display = 'none', 1000);
                 }
-            }, 1500);
+            }, 1000);
         });
 
         // --- Event Listeners Binding ---
