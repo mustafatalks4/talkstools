@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Talks Tools - Advanced Content Suite</title>
-    
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
+
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -39,16 +39,16 @@
             color: var(--text-primary);
         }
 
-        /* Custom scrollbar */
+        /* Custom scrollbar - Updated Color */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg-secondary); }
-        ::-webkit-scrollbar-thumb { background: var(--accent-primary); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--accent-hover); }
+        ::-webkit-scrollbar-thumb { background: var(--accent-hover); border-radius: 10px; transition: background-color 0.2s ease; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-primary); }
 
         /* Animations */
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
         .fade-in { animation: fadeIn 0.4s ease-out forwards; }
-        
+
         @keyframes blink {
             50% { border-color: transparent; }
         }
@@ -67,7 +67,7 @@
         .sidebar-link.active span {
             color: var(--accent-primary);
         }
-        
+
         .main-btn {
             background-color: var(--accent-primary);
             color: var(--bg-primary);
@@ -78,6 +78,12 @@
         .main-btn:hover {
             background-color: var(--accent-hover);
             transform: translateY(-2px);
+        }
+        .main-btn:disabled {
+            background-color: var(--bg-tertiary);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+            transform: none;
         }
 
         .secondary-btn {
@@ -92,38 +98,45 @@
             background-color: #3a3a3a;
         }
 
-        .custom-input, .custom-select {
+        .custom-input, .custom-select, textarea {
             background-color: var(--bg-secondary);
             border: 1px solid var(--border-color);
             border-radius: 8px;
             color: var(--text-primary);
             padding: 0.75rem 1rem;
         }
-        .custom-input:focus, .custom-select:focus {
+        .custom-input:focus, .custom-select:focus, textarea:focus {
             outline: none;
             border-color: var(--accent-primary);
             box-shadow: 0 0 0 2px rgba(0, 255, 163, 0.3);
         }
-        
+
         .result-card {
             background-color: var(--bg-secondary);
             border: 1px solid var(--border-color);
             border-radius: 12px;
         }
-        
+
         /* Hide number input arrows */
-        input[type=number]::-webkit-inner-spin-button, 
-        input[type=number]::-webkit-outer-spin-button { 
-          -webkit-appearance: none; 
-          margin: 0; 
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
         }
         input[type=number] {
-          -moz-appearance: textfield;
+            -moz-appearance: textfield;
         }
     </style>
 </head>
 <body class="h-screen flex flex-col">
-    
+
+    <!-- Maintenance Mode Overlay - Updated UI -->
+    <div id="maintenance-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden flex-col items-center justify-center text-center p-8">
+        <i class="fas fa-wrench fa-3x text-white mb-4"></i>
+        <h1 class="text-3xl font-bold text-white mb-2">Website Under Maintenance</h1>
+        <p class="text-text-secondary text-lg">Please wait some time.</p>
+    </div>
+
     <!-- Main Header -->
     <header class="w-full bg-zinc-900/80 backdrop-blur-md border-b border-border-color z-40 flex-shrink-0">
         <div class="container mx-auto flex justify-between items-center p-4">
@@ -153,7 +166,7 @@
                     <i class="fas fa-bolt fa-2x text-accent-primary"></i>
                     <h1 class="text-2xl font-bold">Talks Tools</h1>
                 </a>
-                <nav id="main-nav" class="flex flex-col gap-1 overflow-y-auto">
+                <nav id="main-nav" class="flex flex-col gap-1 overflow-y-auto pr-2">
                     <!-- Nav links will be injected here -->
                 </nav>
             </div>
@@ -161,7 +174,7 @@
                 <p class="text-xs text-text-secondary">Powered by The Talks Automation</p>
             </div>
         </aside>
-        
+
         <!-- Overlay for mobile menu -->
         <div id="overlay" class="fixed inset-0 bg-zinc-900/90 backdrop-blur-sm z-40 hidden md:hidden"></div>
 
@@ -183,7 +196,7 @@
             <main id="page-embed-code" class="p-4 sm:p-6 md:p-8 hidden"></main>
         </div>
     </div>
-    
+
     <footer class="w-full bg-zinc-900 border-t border-border-color z-40 flex-shrink-0">
         <div class="container mx-auto text-center p-4">
             <div class="flex justify-center gap-6 mb-2">
@@ -203,13 +216,12 @@
 
     <script>
         // --- API Configuration ---
-        const API_KEY = "AIzaSyCO18Y_YH9AGDKz8cwuswCRsvtLfAtYBYA";
+        // IMPORTANT: Replace "YOUR_API_KEY" with your actual Google AI Gemini API key.
+        const API_KEY = "YOUR_API_KEY";
 
-          // --- Maintenance Mode ---
+        // --- Maintenance Mode ---
         // Set to 'true' to enable maintenance mode, 'false' to disable.
         const isMaintenanceMode = false;
-
-
 
         // --- Tool Definitions ---
         const tools = [
@@ -227,7 +239,7 @@
             { id: 'embed-code', name: 'Embed Code', icon: 'fas fa-code', description: 'Generate HTML embed codes for your YouTube videos.' }
         ];
 
-        // --- Page Templates ---
+        // --- Page Templates (same as before) ---
         const pageTemplates = {
             home: `
                 <div class="max-w-4xl mx-auto">
@@ -271,8 +283,8 @@
                         <button id="show-idea-helper-btn" class="secondary-btn w-full py-2 px-4 flex items-center justify-center"><i class="fas fa-search mr-2"></i>Generate Video Ideas</button>
                         <div id="idea-helper-ui" class="hidden mt-4 pt-4 border-t border-border-color">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                 <div><label for="idea-category-select" class="block text-sm font-semibold mb-2 text-accent-primary">Category</label><select id="idea-category-select" class="w-full custom-select"><option value="Tech">Tech</option><option value="Art">Art</option><option value="History">History</option><option value="Science">Science</option><option value="Music">Music</option><option value="Mystery">Mystery</option></select></div>
-                                 <div><label for="idea-keyword-input" class="block text-sm font-semibold mb-2 text-accent-primary">Keyword</label><input type="text" id="idea-keyword-input" class="w-full custom-input" placeholder="e.g., 'iPhone' or 'Rock music'"></div>
+                                <div><label for="idea-category-select" class="block text-sm font-semibold mb-2 text-accent-primary">Category</label><select id="idea-category-select" class="w-full custom-select"><option value="Tech">Tech</option><option value="Art">Art</option><option value="History">History</option><option value="Science">Science</option><option value="Music">Music</option><option value="Mystery">Mystery</option></select></div>
+                                <div><label for="idea-keyword-input" class="block text-sm font-semibold mb-2 text-accent-primary">Keyword</label><input type="text" id="idea-keyword-input" class="w-full custom-input" placeholder="e.g., 'iPhone' or 'Rock music'"></div>
                             </div>
                             <button id="generate-ideas-btn" class="main-btn w-full py-2 px-4 mt-4 flex items-center justify-center"><i class="fas fa-lightbulb mr-2"></i><span class="btn-text">Get 5 Ideas</span><div class="spinner hidden w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div></button>
                             <div id="ideas-output" class="mt-4 space-y-2"></div>
@@ -291,7 +303,7 @@
                     <div id="script-results-wrapper" class="result-card p-6 hidden"><div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold">Generated Script</h3><button class="copy-btn text-text-secondary hover:text-accent-primary" title="Copy Script" id="copy-script-btn"><i class="fas fa-copy text-lg"></i></button></div><div id="script-output" class="text-text-secondary whitespace-pre-wrap bg-bg-primary p-4 rounded-lg min-h-[200px]"></div></div>
                 </div>`,
             'prompt-generator': `
-                 <div class="max-w-4xl mx-auto">
+                <div class="max-w-4xl mx-auto">
                     <header class="mb-8"><h2 class="text-3xl font-extrabold">AI Prompt Generator</h2><p class="text-text-secondary mt-1">Craft expert-level prompts for any AI model.</p></header>
                     <div class="result-card p-6 mb-8">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
@@ -310,7 +322,7 @@
                     <div class="result-card p-6 mb-8">
                         <label for="extractor-url-input" class="block text-lg font-semibold mb-3 text-accent-primary">YouTube Video URL</label>
                         <div class="flex flex-col sm:flex-row gap-4">
-                            <input type="text" id="extractor-url-input" class="w-full custom-input" placeholder="e.g., https://www.youtube.com/watch?v=...">
+                            <input type="text" id="extractor-url-input" class="w-full custom-input" placeholder="e.g., https://www.youtube.com/watch?v=dQw4w9WgXcQ">
                             <button id="extract-btn" class="main-btn py-3 px-6 flex items-center justify-center whitespace-nowrap"><i class="fas fa-search mr-2"></i><span class="btn-text">Extract & Generate</span><div class="spinner hidden w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div></button>
                         </div>
                     </div>
@@ -337,12 +349,12 @@
                     </div>
                 </div>`,
             'tags-generator': `
-                 <div class="max-w-4xl mx-auto">
+                <div class="max-w-4xl mx-auto">
                     <header class="mb-8"><h2 class="text-3xl font-extrabold">Video Tags Generator</h2><p class="text-text-secondary mt-1">Generate optimized tags from a YouTube video URL.</p></header>
                     <div class="result-card p-6 mb-8">
                         <label for="tags-url-input" class="block text-lg font-semibold mb-3 text-accent-primary">YouTube Video URL</label>
                         <div class="flex flex-col sm:flex-row gap-4">
-                            <input type="text" id="tags-url-input" class="w-full custom-input" placeholder="e.g., https://www.youtube.com/watch?v=...">
+                            <input type="text" id="tags-url-input" class="w-full custom-input" placeholder="e.g., https://www.youtube.com/watch?v=dQw4w9WgXcQ">
                             <button id="generate-tags-from-url-btn" class="main-btn py-3 px-6 flex items-center justify-center whitespace-nowrap"><i class="fas fa-tags mr-2"></i><span class="btn-text">Generate Tags</span><div class="spinner hidden w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div></button>
                         </div>
                     </div>
@@ -352,7 +364,7 @@
                     </div>
                 </div>`,
             'keyword-suggester': `
-                 <div class="max-w-4xl mx-auto">
+                <div class="max-w-4xl mx-auto">
                     <header class="mb-8"><h2 class="text-3xl font-extrabold">Keyword Suggester</h2><p class="text-text-secondary mt-1">Get relevant keywords for your video topic.</p></header>
                     <div class="result-card p-6 mb-8">
                         <label for="keyword-suggester-input" class="block text-lg font-semibold mb-3 text-accent-primary">Video Title or Topic</label>
@@ -367,12 +379,12 @@
                     </div>
                 </div>`,
             'thumbnail-downloader': `
-                 <div class="max-w-4xl mx-auto">
+                <div class="max-w-4xl mx-auto">
                     <header class="mb-8"><h2 class="text-3xl font-extrabold">Thumbnail Downloader</h2><p class="text-text-secondary mt-1">Download any YouTube video's thumbnail in high quality.</p></header>
                     <div class="result-card p-6 mb-8">
                         <label for="thumbnail-url-input" class="block text-lg font-semibold mb-3 text-accent-primary">YouTube Video URL</label>
                         <div class="flex flex-col sm:flex-row gap-4">
-                            <input type="text" id="thumbnail-url-input" class="w-full custom-input" placeholder="e.g., https://www.youtube.com/watch?v=...">
+                            <input type="text" id="thumbnail-url-input" class="w-full custom-input" placeholder="e.g., https://www.youtube.com/watch?v=dQw4w9WgXcQ">
                             <button id="get-thumbnail-btn" class="main-btn py-3 px-6 flex items-center justify-center whitespace-nowrap"><i class="fas fa-image mr-2"></i><span class="btn-text">Get Thumbnail</span><div class="spinner hidden w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div></button>
                         </div>
                     </div>
@@ -383,12 +395,12 @@
                     </div>
                 </div>`,
             'find-competitors': `
-                 <div class="max-w-4xl mx-auto">
+                <div class="max-w-4xl mx-auto">
                     <header class="mb-8"><h2 class="text-3xl font-extrabold">Find Competitors</h2><p class="text-text-secondary mt-1">Get AI-powered analysis of competitor channels.</p></header>
                     <div class="result-card p-6 mb-8">
                         <label for="competitor-topic-input" class="block text-lg font-semibold mb-3 text-accent-primary">Channel URL or Handle</label>
                         <div class="flex flex-col sm:flex-row gap-4">
-                            <input type="text" id="competitor-topic-input" class="w-full custom-input" placeholder="e.g., https://www.youtube.com/@MrBeast">
+                            <input type="text" id="competitor-topic-input" class="w-full custom-input" placeholder="e.g., @MrBeast or https://www.youtube.com/@MrBeast">
                             <button id="find-competitors-btn" class="main-btn py-3 px-6 flex items-center justify-center whitespace-nowrap"><i class="fas fa-users mr-2"></i><span class="btn-text">Find Competitors</span><div class="spinner hidden w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div></button>
                         </div>
                         <p class="text-xs text-text-secondary mt-3 text-center">Note: All data is AI-estimated for analytical purposes only.</p>
@@ -403,7 +415,7 @@
                     <div class="result-card p-6 mb-8">
                         <label for="subscribe-url-input" class="block text-lg font-semibold mb-3 text-accent-primary">Your YouTube Channel URL</label>
                         <div class="flex flex-col sm:flex-row gap-4">
-                            <input type="text" id="subscribe-url-input" class="w-full custom-input" placeholder="e.g., https://www.youtube.com/channel/...">
+                            <input type="text" id="subscribe-url-input" class="w-full custom-input" placeholder="e.g., https://www.youtube.com/channel/UCX6OQ3DkcsbYNE6H8uQQuVA">
                             <button id="generate-subscribe-link-btn" class="main-btn py-3 px-6 flex items-center justify-center whitespace-nowrap"><i class="fas fa-link mr-2"></i><span class="btn-text">Generate Link</span></button>
                         </div>
                     </div>
@@ -445,7 +457,7 @@
                     <header class="mb-8"><h2 class="text-3xl font-extrabold">YouTube Embed Code Generator</h2><p class="text-text-secondary mt-1">Create embed codes for your videos.</p></header>
                     <div class="result-card p-6 mb-8">
                         <label for="embed-url-input" class="block text-lg font-semibold mb-3 text-accent-primary">YouTube Video URL</label>
-                        <input type="text" id="embed-url-input" class="w-full custom-input" placeholder="e.g., https://www.youtube.com/watch?v=...">
+                        <input type="text" id="embed-url-input" class="w-full custom-input" placeholder="e.g., https://www.youtube.com/watch?v=dQw4w9WgXcQ">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
                             <div><label for="embed-width-input" class="block text-sm font-semibold mb-2">Width</label><input type="text" id="embed-width-input" class="w-full custom-input" value="560"></div>
                             <div><label for="embed-height-input" class="block text-sm font-semibold mb-2">Height</label><input type="text" id="embed-height-input" class="w-full custom-input" value="315"></div>
@@ -461,18 +473,21 @@
 
         // --- State ---
         let popupTimeout;
-        let generatedData = { 
-            title: '', description: '', tags: '', copyright: '', 
-            script: '', prompts: [], 
-            extractorTitle: '', extractorDesc: '', extractorTags: '', 
+        let generatedData = {
+            title: '', description: '', tags: '', copyright: '',
+            script: '', prompts: [],
+            extractorTitle: '', extractorDesc: '', extractorTags: '',
             generatedTags: '', suggestedKeywords: '',
             subscribeLink: '', capitalizedTitle: '', embedCode: ''
         };
-        
+
         const pages = {};
 
         // --- Initialization ---
         document.addEventListener('DOMContentLoaded', () => {
+            // This function now runs completely to build the UI first.
+            // The maintenance mode check is moved to the end.
+
             Object.keys(pageTemplates).forEach(pageId => {
                 pages[pageId] = document.getElementById(`page-${pageId}`);
                 const pageElement = pages[pageId];
@@ -483,9 +498,8 @@
 
             const mainNav = document.getElementById('main-nav');
             const homeToolsGrid = document.getElementById('home-tools-grid');
-            
+
             tools.forEach(tool => {
-                // Populate sidebar
                 const navLink = document.createElement('a');
                 navLink.href = '#';
                 navLink.id = `nav-${tool.id}`;
@@ -494,7 +508,6 @@
                 navLink.innerHTML = `<i class="${tool.icon} fa-fw sidebar-icon"></i><span>${tool.name}</span>`;
                 mainNav.appendChild(navLink);
 
-                // Populate home page grid
                 if (homeToolsGrid) {
                     const toolCard = document.createElement('a');
                     toolCard.href = '#';
@@ -514,7 +527,16 @@
             pages['home'].classList.remove('hidden');
 
             bindAllEventListeners();
-            startTypewriter();
+            if (pages['home']) {
+                startTypewriter();
+            }
+
+            // Check for maintenance mode after the entire UI has been rendered
+            if (isMaintenanceMode) {
+                const overlay = document.getElementById('maintenance-overlay');
+                overlay.classList.remove('hidden');
+                overlay.classList.add('flex'); // Use flex to enable centering
+            }
         });
 
         // --- Event Listeners Binding ---
@@ -525,7 +547,7 @@
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
                     const pageId = link.dataset.page;
-                    
+
                     const sidebar = get('sidebar');
                     const overlay = get('overlay');
                     if(sidebar && !sidebar.classList.contains('-translate-x-full')) {
@@ -542,7 +564,7 @@
                     }
                 });
             });
-            
+
             document.querySelectorAll('.coming-soon-link').forEach(link => {
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
@@ -596,7 +618,7 @@
             get('generate-embed-btn')?.addEventListener('click', handleEmbedCodeGeneration);
             get('copy-embed-btn')?.addEventListener('click', () => copyToClipboard(generatedData.embedCode));
         }
-        
+
 
         // --- Core Functions ---
         function toggleMenu() {
@@ -615,7 +637,11 @@
         }
 
         async function callGeminiAPI(prompt) {
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
+            if (API_KEY === "YOUR_API_KEY") {
+                showPopup("API Key not configured. Please add your API key in the script.", 'error');
+                return null;
+            }
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
             const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
             try {
                 const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
@@ -636,14 +662,15 @@
         async function handleContentGeneration() {
             const keyword = document.getElementById('content-keyword-input').value.trim();
             if (!keyword) { showPopup("Please enter a topic first.", 'error'); return; }
-            toggleButtonLoading(document.getElementById('generate-content-btn'), true);
+            const button = document.getElementById('generate-content-btn');
+            toggleButtonLoading(button, true);
             document.getElementById('content-results-wrapper').classList.add('hidden');
             const titlesPrompt = `Generate 5 catchy, SEO-optimized YouTube video titles for 2025-2026 on the topic: "${keyword}". Separate each title with "|||". Do not use numbering.`;
             const titlesResponse = await callGeminiAPI(titlesPrompt);
-            if (!titlesResponse) { toggleButtonLoading(document.getElementById('generate-content-btn'), false); return; }
+            if (!titlesResponse) { toggleButtonLoading(button, false); return; }
             const titles = titlesResponse.split('|||').map(t => t.trim()).filter(Boolean);
             displayTitles(titles);
-            generatedData.title = titles[0] || keyword; 
+            generatedData.title = titles[0] || keyword;
             const descPrompt = `Generate a long, SEO-friendly YouTube description for a 2025 video titled: "${generatedData.title}". Include a hook, summary, placeholder timestamps, placeholder links, and a call-to-action. Use emojis.`;
             const tagsPrompt = `Generate up to 50 relevant, SEO-optimized YouTube tags for a video titled "${generatedData.title}". Include long-tail and short-tail keywords. The tags should be comma-separated.`;
             const copyrightPrompt = `Generate a standard "fair use" copyright disclaimer for a YouTube video for use in 2025.`;
@@ -652,7 +679,7 @@
             if (tagsResponse) { generatedData.tags = tagsResponse; document.getElementById('tags-output').innerText = tagsResponse; }
             if (copyrightResponse) { generatedData.copyright = copyrightResponse; document.getElementById('copyright-output').innerText = copyrightResponse; }
             document.getElementById('content-results-wrapper').classList.remove('hidden');
-            toggleButtonLoading(document.getElementById('generate-content-btn'), false);
+            toggleButtonLoading(button, false);
         }
 
         function displayTitles(titles) {
@@ -666,13 +693,14 @@
                 titlesOutput.appendChild(titleEl);
             });
         }
-        
+
         // --- Script Generation Logic ---
         async function handleIdeaGeneration() {
             const category = document.getElementById('idea-category-select').value;
             const keyword = document.getElementById('idea-keyword-input').value.trim();
             if (!keyword) { showPopup("Please enter a keyword for your idea.", 'error'); return; }
-            toggleButtonLoading(document.getElementById('generate-ideas-btn'), true);
+            const button = document.getElementById('generate-ideas-btn');
+            toggleButtonLoading(button, true);
             document.getElementById('ideas-output').innerHTML = '';
             const prompt = `Based on the category "${category}" and the keyword "${keyword}", generate 5 unique and engaging YouTube video ideas. The ideas should be concise and serve as potential video titles. Separate each idea with "|||".`;
             const response = await callGeminiAPI(prompt);
@@ -680,7 +708,7 @@
                 const ideas = response.split('|||').map(i => i.trim()).filter(Boolean);
                 displayIdeas(ideas);
             }
-            toggleButtonLoading(document.getElementById('generate-ideas-btn'), false);
+            toggleButtonLoading(button, false);
         }
 
         function displayIdeas(ideas) {
@@ -708,7 +736,8 @@
             const tone = document.getElementById('script-tone-select').value;
             const words = document.getElementById('script-words-input').value.trim();
             if (!topic || !words) { showPopup("Please fill all fields.", 'error'); return; }
-            toggleButtonLoading(document.getElementById('generate-script-btn'), true);
+            const button = document.getElementById('generate-script-btn');
+            toggleButtonLoading(button, true);
             document.getElementById('script-results-wrapper').classList.add('hidden');
             const prompt = `You are an expert YouTube scriptwriter. Your task is to generate a complete video script based on the following specifications. **Topic**: "${topic}", **Language**: **${language}**, **Script Type**: **${type}**, **Tone**: **${tone}**, **Word Count**: Approximately **${words}** words. **Crucial Requirement**: The script MUST begin with a powerful, engaging hook within the first 15-30 seconds designed to grab the viewer's attention immediately. **Structural Guidance for Script Type "${type}":** - If "Training/Tutorial" or "How-To Guide", structure with clear, step-by-step instructions. - If "Explainer Video" or "Tech Explainer", break down the complex topic into simple, digestible sections. Start with the problem, then present the solution/explanation. - If "Listicle", format the main content as a numbered list (e.g., "Number 5:", "Number 4:", etc.). - If "Product Demo" or "Review", structure around key features, pros, and cons, and a final verdict. - If "Vlog", write in a personal, conversational, first-person style. - If "Interview", format as a Q&A between an "Interviewer" and "Guest". - For all other types, use a standard intro-body-conclusion format suitable for the selected tone. **Formatting (Strict):** Use timestamps for different sections (e.g., 00:00 - 00:15). Include placeholders for visuals or actions in parentheses, like (Show B-roll of a circuit board). Generate the script now.`;
             const scriptResponse = await callGeminiAPI(prompt);
@@ -717,7 +746,7 @@
                 document.getElementById('script-output').innerText = scriptResponse;
                 document.getElementById('script-results-wrapper').classList.remove('hidden');
             }
-            toggleButtonLoading(document.getElementById('generate-script-btn'), false);
+            toggleButtonLoading(button, false);
         }
 
         // --- Prompt Generation Logic ---
@@ -753,7 +782,8 @@
             const style = document.getElementById('prompt-style-select').value;
             const quantity = document.getElementById('prompt-quantity-input').value;
             if (!topic || !category || !style) { showPopup("Please fill all fields.", 'error'); return; }
-            toggleButtonLoading(document.getElementById('generate-prompt-btn'), true);
+            const button = document.getElementById('generate-prompt-btn');
+            toggleButtonLoading(button, true);
             const promptResultsWrapper = document.getElementById('prompt-results-wrapper');
             promptResultsWrapper.innerHTML = '';
             promptResultsWrapper.classList.add('hidden');
@@ -764,9 +794,9 @@
                 displayPrompts(generatedData.prompts);
                 promptResultsWrapper.classList.remove('hidden');
             }
-            toggleButtonLoading(document.getElementById('generate-prompt-btn'), false);
+            toggleButtonLoading(button, false);
         }
-        
+
         function displayPrompts(prompts) {
             const promptResultsWrapper = document.getElementById('prompt-results-wrapper');
             promptResultsWrapper.innerHTML = '';
@@ -785,13 +815,14 @@
             if (!url) { showPopup("Please enter a YouTube URL.", 'error'); return; }
             const videoId = getYouTubeID(url);
             if (!videoId) { showPopup("Invalid YouTube URL.", 'error'); return; }
-            toggleButtonLoading(document.getElementById('extract-btn'), true);
+            const button = document.getElementById('extract-btn');
+            toggleButtonLoading(button, true);
             document.getElementById('extractor-results-wrapper').classList.add('hidden');
-            const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+            const thumbnailUrl = `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`;
             document.getElementById('extractor-thumbnail-output').src = thumbnailUrl;
-            document.getElementById('extractor-thumbnail-output').onerror = () => { document.getElementById('extractor-thumbnail-output').src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`; };
+            document.getElementById('extractor-thumbnail-output').onerror = () => { document.getElementById('extractor-thumbnail-output').src = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`; };
             let title = await getVideoTitle(videoId);
-            if (!title) { toggleButtonLoading(document.getElementById('extract-btn'), false); return; }
+            if (!title) { toggleButtonLoading(button, false); return; }
             generatedData.extractorTitle = title;
             document.getElementById('extractor-title-output').innerText = title;
             const descPrompt = `Generate a long, SEO-friendly YouTube description for a video titled: "${title}". Include a hook, summary, placeholder timestamps, placeholder links, and a call-to-action. Use emojis.`;
@@ -800,7 +831,7 @@
             if (descResponse) { generatedData.extractorDesc = descResponse; document.getElementById('extractor-desc-output').innerText = descResponse; }
             if (tagsResponse) { generatedData.extractorTags = tagsResponse; document.getElementById('extractor-tags-output').innerText = tagsResponse; }
             document.getElementById('extractor-results-wrapper').classList.remove('hidden');
-            toggleButtonLoading(document.getElementById('extract-btn'), false);
+            toggleButtonLoading(button, false);
         }
 
         // --- Tags Generator from URL Logic ---
@@ -809,10 +840,11 @@
             if (!url) { showPopup("Please enter a YouTube URL.", 'error'); return; }
             const videoId = getYouTubeID(url);
             if (!videoId) { showPopup("Invalid YouTube URL.", 'error'); return; }
-            toggleButtonLoading(document.getElementById('generate-tags-from-url-btn'), true);
+            const button = document.getElementById('generate-tags-from-url-btn');
+            toggleButtonLoading(button, true);
             document.getElementById('tags-generator-results-wrapper').classList.add('hidden');
             let title = await getVideoTitle(videoId);
-            if (!title) { toggleButtonLoading(document.getElementById('generate-tags-from-url-btn'), false); return; }
+            if (!title) { toggleButtonLoading(button, false); return; }
             const tagsPrompt = `Generate up to 50 relevant, SEO-optimized YouTube tags for a video titled "${title}". Include long-tail and short-tail keywords. The tags should be comma-separated.`;
             const tagsResponse = await callGeminiAPI(tagsPrompt);
             if (tagsResponse) {
@@ -820,14 +852,15 @@
                 document.getElementById('tags-generator-output').innerText = tagsResponse;
                 document.getElementById('tags-generator-results-wrapper').classList.remove('hidden');
             }
-            toggleButtonLoading(document.getElementById('generate-tags-from-url-btn'), false);
+            toggleButtonLoading(button, false);
         }
 
         // --- Keyword Suggester Logic ---
         async function handleKeywordSuggestion() {
             const topic = document.getElementById('keyword-suggester-input').value.trim();
             if (!topic) { showPopup("Please enter a topic.", 'error'); return; }
-            toggleButtonLoading(document.getElementById('generate-keywords-btn'), true);
+            const button = document.getElementById('generate-keywords-btn');
+            toggleButtonLoading(button, true);
             document.getElementById('keyword-suggester-results-wrapper').classList.add('hidden');
             const prompt = `Generate a list of relevant SEO keywords and tags for a YouTube video about "${topic}". Include a mix of short-tail and long-tail keywords. The output should be a single, comma-separated list.`;
             const response = await callGeminiAPI(prompt);
@@ -836,7 +869,7 @@
                 document.getElementById('keyword-suggester-output').innerText = response;
                 document.getElementById('keyword-suggester-results-wrapper').classList.remove('hidden');
             }
-            toggleButtonLoading(document.getElementById('generate-keywords-btn'), false);
+            toggleButtonLoading(button, false);
         }
 
         // --- Thumbnail Downloader Logic ---
@@ -845,10 +878,10 @@
             if (!url) { showPopup("Please enter a YouTube URL.", 'error'); return; }
             const videoId = getYouTubeID(url);
             if (!videoId) { showPopup("Invalid YouTube URL.", 'error'); return; }
-            const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+            const thumbnailUrl = `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`;
             const outputImg = document.getElementById('thumbnail-downloader-output');
             outputImg.src = thumbnailUrl;
-            outputImg.onerror = () => { outputImg.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`; };
+            outputImg.onerror = () => { outputImg.src = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`; };
             document.getElementById('thumbnail-downloader-results-wrapper').classList.remove('hidden');
         }
 
@@ -856,10 +889,11 @@
         async function handleFindCompetitors() {
             const topic = document.getElementById('competitor-topic-input').value.trim();
             if (!topic) { showPopup("Please enter a channel name or topic.", 'error'); return; }
-            toggleButtonLoading(document.getElementById('find-competitors-btn'), true);
+            const button = document.getElementById('find-competitors-btn');
+            toggleButtonLoading(button, true);
             const competitorResultsWrapper = document.getElementById('competitor-results-wrapper');
             competitorResultsWrapper.innerHTML = '';
-            competitorResultsWrapper.classList.remove('hidden'); 
+            competitorResultsWrapper.classList.remove('hidden');
             competitorResultsWrapper.innerHTML = `<div class="col-span-1 lg:col-span-3 flex justify-center items-center p-8"><div class="w-8 h-8 border-4 border-accent-primary border-t-transparent rounded-full animate-spin"></div></div>`;
             const prompt = `Act as a YouTube channel analyst. Based on the channel topic or name "${topic}", find 10 similar competitor channels. For each channel, provide: Channel Name, a clean version of the channel name for its handle (e.g., "@channelname"), Estimated Subscribers (e.g., "5.2M"), Estimated Total Videos (e.g., "~150"), and Estimated Total Views (e.g., "~10M"). Format the response strictly as follows, with each channel's data on a new line and separated by a pipe "|". Separate each channel block with "|||---|||". Example: Channel Name: Example Channel 1 | Handle: examplechannel1 | Subscribers: ~5.2M | Total Videos: ~150 | Total Views: ~10M`;
             const response = await callGeminiAPI(prompt);
@@ -869,7 +903,7 @@
             } else {
                  competitorResultsWrapper.innerHTML = `<p class="col-span-1 lg:col-span-3 text-center text-text-secondary">Could not find competitors. Please try a different topic.</p>`;
             }
-            toggleButtonLoading(document.getElementById('find-competitors-btn'), false);
+            toggleButtonLoading(button, false);
         }
 
         function displayCompetitors(competitors) {
@@ -900,8 +934,8 @@
                 competitorResultsWrapper.appendChild(card);
             });
         }
-        
-        // --- New Tools Logic ---
+
+        // --- Other Tools Logic ---
         function handleSubscribeLink() {
             const urlInput = document.getElementById('subscribe-url-input');
             let url = urlInput.value.trim();
@@ -930,9 +964,8 @@
         function handleCapitalization() {
             const input = document.getElementById('capitalize-input').value.trim();
             if (!input) { showPopup("Please enter a title.", 'error'); return; }
-            const capitalized = input.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-            generatedData.capitalizedTitle = capitalized;
-            document.getElementById('capitalize-output').innerText = capitalized;
+            generatedData.capitalizedTitle = toTitleCase(input);
+            document.getElementById('capitalize-output').innerText = generatedData.capitalizedTitle;
             document.getElementById('capitalize-results-wrapper').classList.remove('hidden');
         }
 
@@ -989,24 +1022,31 @@
         // --- Utility Functions ---
         async function getVideoTitle(videoId) {
             try {
-                const oembedUrl = `https://noembed.com/embed?url=https://www.youtube.com/watch?v=${videoId}`;
-                const response = await fetch(oembedUrl);
+                const oembedUrl = `https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v=${videoId}&format=json`;
+                const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(oembedUrl)}`);
                 const data = await response.json();
-                if (data.title) return data.title;
-                else throw new Error("Title not found");
+                const youtubeData = JSON.parse(data.contents);
+                if (youtubeData.title) return youtubeData.title;
+                else throw new Error("Title not found in oEmbed response");
             } catch (error) {
                 console.error("Failed to fetch title:", error);
-                showPopup("Could not fetch video title.", "error");
+                showPopup("Could not fetch video title. The video might be private or deleted.", "error");
                 return null;
             }
         }
 
         function getYouTubeID(url) {
-            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-            const match = url.match(regExp);
-            return (match && match[2].length === 11) ? match[2] : null;
+            let ID = '';
+            url = url.replace(/(>|<)/gi, '').split(/(vi\/|v=|\/v\/|youtu\.be\/|\/embed\/)/);
+            if (url[2] !== undefined) {
+                ID = url[2].split(/[^0-9a-z_\-]/i);
+                ID = ID[0];
+            } else {
+                ID = url;
+            }
+            return ID;
         }
-        
+
         async function downloadImage(imageSrc, fileName) {
             try {
                 const response = await fetch(imageSrc);
@@ -1042,6 +1082,16 @@
                 showPopup("Failed to copy.", 'error');
             }
             document.body.removeChild(textArea);
+        }
+
+        function toTitleCase(str) {
+            const smallWords = /^(a|an|and|as|at|but|by|en|for|if|in|nor|of|on|or|per|the|to|vs?\.?|via)$/i;
+            return str.split(' ').map((word, index, arr) => {
+                if (index === 0 || index === arr.length - 1 || !smallWords.test(word)) {
+                    return word.charAt(0).toUpperCase() + word.substr(1).toLowerCase();
+                }
+                return word.toLowerCase();
+            }).join(' ');
         }
 
         function showPopup(message, type = 'success') {
