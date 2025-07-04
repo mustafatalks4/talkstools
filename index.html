@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Talk Tools - Advanced Content Suite</title>
+    <title>Talks Tools - Advanced Content Suite</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -29,6 +29,10 @@
             --border-color: #2A2A2A;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-primary);
@@ -44,6 +48,14 @@
         /* Animations */
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
         .fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        
+        @keyframes blink {
+            50% { border-color: transparent; }
+        }
+        .blinking-cursor {
+            border-right: 3px solid var(--accent-primary);
+            animation: blink 0.75s step-end infinite;
+        }
 
         /* --- Component Styles --- */
         .sidebar-icon {
@@ -110,52 +122,79 @@
         }
     </style>
 </head>
-<body class="flex flex-col md:flex-row min-h-screen">
-
-    <!-- Sidebar Navigation -->
-    <aside class="w-full md:w-64 bg-secondary border-r border-border-color p-4 flex flex-row md:flex-col justify-between md:justify-start">
-        <div>
-            <a href="#" id="nav-home" class="flex items-center gap-3 mb-10 px-2">
-                <i class="fas fa-bolt fa-2x text-accent-primary"></i>
-                <h1 class="text-2xl font-bold">Talk Tools</h1>
+<body class="h-screen flex flex-col">
+    
+    <!-- Main Header -->
+    <header class="w-full bg-zinc-900/80 backdrop-blur-md border-b border-border-color z-40 flex-shrink-0">
+        <div class="container mx-auto flex justify-between items-center p-4">
+            <a href="#" data-page="home" class="nav-trigger flex items-center gap-2">
+                <i class="fas fa-bolt fa-lg text-accent-primary"></i>
+                <h1 class="text-xl font-bold">Talks Tools</h1>
             </a>
-            <nav class="flex flex-row md:flex-col gap-1 overflow-x-auto pb-2">
-                <a href="#" id="nav-content-generator" class="sidebar-link flex-shrink-0 flex items-center gap-4 p-3 rounded-lg hover:bg-tertiary transition-colors"><i class="fas fa-magic fa-fw sidebar-icon"></i><span class="hidden md:inline">Content Generator</span></a>
-                <a href="#" id="nav-script-generator" class="sidebar-link flex-shrink-0 flex items-center gap-4 p-3 rounded-lg hover:bg-tertiary transition-colors"><i class="fas fa-file-alt fa-fw sidebar-icon"></i><span class="hidden md:inline">Script Generator</span></a>
-                <a href="#" id="nav-prompt-generator" class="sidebar-link flex-shrink-0 flex items-center gap-4 p-3 rounded-lg hover:bg-tertiary transition-colors"><i class="fas fa-lightbulb fa-fw sidebar-icon"></i><span class="hidden md:inline">Prompt Generator</span></a>
-                <a href="#" id="nav-channel-extractor" class="sidebar-link flex-shrink-0 flex items-center gap-4 p-3 rounded-lg hover:bg-tertiary transition-colors"><i class="fab fa-youtube fa-fw sidebar-icon"></i><span class="hidden md:inline">Channel Extractor</span></a>
-                <a href="#" id="nav-tags-generator" class="sidebar-link flex-shrink-0 flex items-center gap-4 p-3 rounded-lg hover:bg-tertiary transition-colors"><i class="fas fa-tags fa-fw sidebar-icon"></i><span class="hidden md:inline">Video Tags Generator</span></a>
-                <a href="#" id="nav-keyword-suggester" class="sidebar-link flex-shrink-0 flex items-center gap-4 p-3 rounded-lg hover:bg-tertiary transition-colors"><i class="fas fa-key fa-fw sidebar-icon"></i><span class="hidden md:inline">Keyword Suggester</span></a>
-                <a href="#" id="nav-thumbnail-downloader" class="sidebar-link flex-shrink-0 flex items-center gap-4 p-3 rounded-lg hover:bg-tertiary transition-colors"><i class="fas fa-image fa-fw sidebar-icon"></i><span class="hidden md:inline">Thumbnail Downloader</span></a>
-                <a href="#" id="nav-find-competitors" class="sidebar-link flex-shrink-0 flex items-center gap-4 p-3 rounded-lg hover:bg-tertiary transition-colors"><i class="fas fa-users fa-fw sidebar-icon"></i><span class="hidden md:inline">Find Competitors</span></a>
-                <a href="#" id="nav-subscribe-link" class="sidebar-link flex-shrink-0 flex items-center gap-4 p-3 rounded-lg hover:bg-tertiary transition-colors"><i class="fas fa-link fa-fw sidebar-icon"></i><span class="hidden md:inline">Subscribe Link</span></a>
-                <a href="#" id="nav-money-calculator" class="sidebar-link flex-shrink-0 flex items-center gap-4 p-3 rounded-lg hover:bg-tertiary transition-colors"><i class="fas fa-calculator fa-fw sidebar-icon"></i><span class="hidden md:inline">Money Calculator</span></a>
-                <a href="#" id="nav-title-capitalizer" class="sidebar-link flex-shrink-0 flex items-center gap-4 p-3 rounded-lg hover:bg-tertiary transition-colors"><i class="fas fa-text-height fa-fw sidebar-icon"></i><span class="hidden md:inline">Title Capitalizer</span></a>
-                <a href="#" id="nav-embed-code" class="sidebar-link flex-shrink-0 flex items-center gap-4 p-3 rounded-lg hover:bg-tertiary transition-colors"><i class="fas fa-code fa-fw sidebar-icon"></i><span class="hidden md:inline">Embed Code</span></a>
+            <nav class="hidden md:flex items-center gap-6">
+                 <a href="#" data-page="home" class="nav-trigger text-text-secondary hover:text-text-primary transition-colors">Home</a>
+                 <a href="#" class="coming-soon-link text-text-secondary hover:text-text-primary transition-colors">Privacy</a>
+                 <a href="#" class="coming-soon-link text-text-secondary hover:text-text-primary transition-colors">Contact</a>
+                 <a href="#" class="coming-soon-link text-text-secondary hover:text-text-primary transition-colors">Services</a>
+                 <a href="#" class="coming-soon-link text-text-secondary hover:text-text-primary transition-colors">About</a>
+                 <a href="#" class="coming-soon-link text-text-secondary hover:text-text-primary transition-colors">Blog</a>
             </nav>
+            <button id="hamburger-btn" class="p-2 text-2xl md:hidden">
+                <i class="fas fa-bars"></i>
+            </button>
         </div>
-         <div class="hidden md:block mt-auto px-2">
-            <p class="text-xs text-text-secondary">Powered by The Talks Automation</p>
-        </div>
-    </aside>
+    </header>
 
-    <!-- Main Content Area -->
-    <div class="flex-1 overflow-y-auto">
-        <!-- All pages will be injected here and toggled -->
-        <main id="page-home" class="p-4 sm:p-6 md:p-8"></main>
-        <main id="page-content-generator" class="p-4 sm:p-6 md:p-8 hidden"></main>
-        <main id="page-script-generator" class="p-4 sm:p-6 md:p-8 hidden"></main>
-        <main id="page-prompt-generator" class="p-4 sm:p-6 md:p-8 hidden"></main>
-        <main id="page-channel-extractor" class="p-4 sm:p-6 md:p-8 hidden"></main>
-        <main id="page-tags-generator" class="p-4 sm:p-6 md:p-8 hidden"></main>
-        <main id="page-keyword-suggester" class="p-4 sm:p-6 md:p-8 hidden"></main>
-        <main id="page-thumbnail-downloader" class="p-4 sm:p-6 md:p-8 hidden"></main>
-        <main id="page-find-competitors" class="p-4 sm:p-6 md:p-8 hidden"></main>
-        <main id="page-subscribe-link" class="p-4 sm:p-6 md:p-8 hidden"></main>
-        <main id="page-money-calculator" class="p-4 sm:p-6 md:p-8 hidden"></main>
-        <main id="page-title-capitalizer" class="p-4 sm:p-6 md:p-8 hidden"></main>
-        <main id="page-embed-code" class="p-4 sm:p-6 md:p-8 hidden"></main>
+    <div class="flex flex-1 overflow-hidden">
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="fixed top-0 left-0 w-64 h-full bg-zinc-900 border-r border-border-color p-4 flex-col justify-between transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out z-50 md:flex">
+            <div class="flex flex-col h-full">
+                <a href="#" data-page="home" id="nav-home" class="nav-trigger hidden md:flex items-center gap-3 mb-10 px-2">
+                    <i class="fas fa-bolt fa-2x text-accent-primary"></i>
+                    <h1 class="text-2xl font-bold">Talks Tools</h1>
+                </a>
+                <nav id="main-nav" class="flex flex-col gap-1 overflow-y-auto">
+                    <!-- Nav links will be injected here -->
+                </nav>
+            </div>
+             <div class="mt-auto px-2 pt-4 flex-shrink-0">
+                <p class="text-xs text-text-secondary">Powered by The Talks Automation</p>
+            </div>
+        </aside>
+        
+        <!-- Overlay for mobile menu -->
+        <div id="overlay" class="fixed inset-0 bg-zinc-900/90 backdrop-blur-sm z-40 hidden md:hidden"></div>
+
+        <!-- Main Content Area -->
+        <div id="main-content" class="flex-1 overflow-y-auto">
+            <!-- All pages will be injected here and toggled -->
+            <main id="page-home" class="p-4 sm:p-6 md:p-8"></main>
+            <main id="page-content-generator" class="p-4 sm:p-6 md:p-8 hidden"></main>
+            <main id="page-script-generator" class="p-4 sm:p-6 md:p-8 hidden"></main>
+            <main id="page-prompt-generator" class="p-4 sm:p-6 md:p-8 hidden"></main>
+            <main id="page-channel-extractor" class="p-4 sm:p-6 md:p-8 hidden"></main>
+            <main id="page-tags-generator" class="p-4 sm:p-6 md:p-8 hidden"></main>
+            <main id="page-keyword-suggester" class="p-4 sm:p-6 md:p-8 hidden"></main>
+            <main id="page-thumbnail-downloader" class="p-4 sm:p-6 md:p-8 hidden"></main>
+            <main id="page-find-competitors" class="p-4 sm:p-6 md:p-8 hidden"></main>
+            <main id="page-subscribe-link" class="p-4 sm:p-6 md:p-8 hidden"></main>
+            <main id="page-money-calculator" class="p-4 sm:p-6 md:p-8 hidden"></main>
+            <main id="page-title-capitalizer" class="p-4 sm:p-6 md:p-8 hidden"></main>
+            <main id="page-embed-code" class="p-4 sm:p-6 md:p-8 hidden"></main>
+        </div>
     </div>
+    
+    <footer class="w-full bg-zinc-900 border-t border-border-color z-40 flex-shrink-0">
+        <div class="container mx-auto text-center p-4">
+            <div class="flex justify-center gap-6 mb-2">
+                <a href="#" class="text-text-secondary hover:text-accent-primary transition-colors"><i class="fab fa-youtube fa-lg"></i></a>
+                <a href="#" class="text-text-secondary hover:text-accent-primary transition-colors"><i class="fab fa-twitter fa-lg"></i></a>
+                <a href="#" class="text-text-secondary hover:text-accent-primary transition-colors"><i class="fab fa-instagram fa-lg"></i></a>
+            </div>
+            <p class="text-sm text-text-secondary">&copy; 2025 Talks Tools. All Rights Reserved.</p>
+        </div>
+    </footer>
+
 
     <!-- Generic Pop-Up -->
     <div id="popup" class="fixed bottom-5 right-5 text-white p-4 rounded-xl shadow-2xl z-50 transition-all duration-300 transform translate-y-20 opacity-0">
@@ -166,24 +205,38 @@
         // --- API Configuration ---
         const API_KEY = "AIzaSyCO18Y_YH9AGDKz8cwuswCRsvtLfAtYBYA";
 
+        // --- Tool Definitions ---
+        const tools = [
+            { id: 'content-generator', name: 'Content Generator', icon: 'fas fa-magic', description: 'Instantly create SEO-optimized titles, descriptions, and tags.' },
+            { id: 'script-generator', name: 'Script Generator', icon: 'fas fa-file-alt', description: 'Generate complete video scripts in any language or tone.' },
+            { id: 'prompt-generator', name: 'Prompt Generator', icon: 'fas fa-lightbulb', description: 'Craft expert-level prompts for AI image, video, and text generation.' },
+            { id: 'channel-extractor', name: 'Channel Extractor', icon: 'fab fa-youtube', description: 'Extract data and generate new content from any YouTube video.' },
+            { id: 'tags-generator', name: 'Video Tags Generator', icon: 'fas fa-tags', description: 'Generate optimized tags from a YouTube video URL.' },
+            { id: 'keyword-suggester', name: 'Keyword Suggester', icon: 'fas fa-key', description: 'Get relevant keywords and tags for your video topic.' },
+            { id: 'thumbnail-downloader', name: 'Thumbnail Downloader', icon: 'fas fa-image', description: 'Download any YouTube video\'s thumbnail in high quality.' },
+            { id: 'find-competitors', name: 'Find Competitors', icon: 'fas fa-users', description: 'Get AI-powered analysis of competitor channels.' },
+            { id: 'subscribe-link', name: 'Subscribe Link', icon: 'fas fa-link', description: 'Create a link that prompts users to subscribe to your channel.' },
+            { id: 'money-calculator', name: 'Money Calculator', icon: 'fas fa-calculator', description: 'Estimate your potential YouTube earnings based on views and RPM.' },
+            { id: 'title-capitalizer', name: 'Title Capitalizer', icon: 'fas fa-text-height', description: 'Properly capitalize your video titles with a single click.' },
+            { id: 'embed-code', name: 'Embed Code', icon: 'fas fa-code', description: 'Generate HTML embed codes for your YouTube videos.' }
+        ];
+
         // --- Page Templates ---
         const pageTemplates = {
             home: `
                 <div class="max-w-4xl mx-auto">
                     <header class="mb-12 text-center">
-                        <h2 class="text-4xl md:text-5xl font-extrabold text-text-primary">Welcome to <span class="text-accent-primary">Talk Tools</span></h2>
-                        <p class="text-text-secondary mt-2 text-lg">Your All-In-One AI Suite for Content Creation</p>
+                        <h2 class="text-4xl md:text-5xl font-extrabold text-text-primary">Welcome to <span class="text-accent-primary">Talks Tools</span></h2>
+                        <p class="text-text-secondary mt-2 text-lg h-8"><span id="animated-text" class="blinking-cursor"></span></p>
                     </header>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-                        <div class="result-card p-6"><i class="fas fa-magic fa-2x text-accent-primary mb-4"></i><h3 class="text-xl font-bold mb-2">Content Generator</h3><p class="text-text-secondary text-sm">Instantly create SEO-optimized titles, descriptions, and tags for your videos.</p></div>
-                        <div class="result-card p-6"><i class="fas fa-file-alt fa-2x text-accent-primary mb-4"></i><h3 class="text-xl font-bold mb-2">Script Generator</h3><p class="text-text-secondary text-sm">Generate complete video scripts in any language or tone from a single topic.</p></div>
-                        <div class="result-card p-6"><i class="fas fa-lightbulb fa-2x text-accent-primary mb-4"></i><h3 class="text-xl font-bold mb-2">Prompt Generator</h3><p class="text-text-secondary text-sm">Craft expert-level prompts for AI image, video, and text generation.</p></div>
+                    <div id="home-tools-grid" class="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-12">
+                        <!-- Tool cards will be injected here -->
                     </div>
                     <div class="result-card p-6">
                         <h3 class="text-2xl font-bold mb-6 text-center">About The Developer</h3>
                         <div class="flex flex-col md:flex-row items-center gap-8">
                             <div class="flex-shrink-0"><img src="https://placehold.co/150x150/00FFA3/0D0D0D?text=MT" alt="Mustafa Talks" class="rounded-full w-36 h-36 border-4 border-accent-primary"></div>
-                            <div><h4 class="text-2xl font-bold text-accent-primary">Mustafa Talks</h4><p class="text-text-secondary mt-2">I'm a passionate content creator and developer dedicated to building tools that empower other creators. Talk Tools was born from a need to streamline the creative process, leveraging the power of AI to handle the heavy lifting so you can focus on what you do best: creating amazing content.</p></div>
+                            <div><h4 class="text-2xl font-bold text-accent-primary">Mustafa Talks</h4><p class="text-text-secondary mt-2">I'm a passionate content creator and developer dedicated to building tools that empower other creators. Talks Tools was born from a need to streamline the creative process, leveraging the power of AI to handle the heavy lifting so you can focus on what you do best: creating amazing content.</p></div>
                         </div>
                     </div>
                 </div>`,
@@ -327,9 +380,9 @@
                  <div class="max-w-4xl mx-auto">
                     <header class="mb-8"><h2 class="text-3xl font-extrabold">Find Competitors</h2><p class="text-text-secondary mt-1">Get AI-powered analysis of competitor channels.</p></header>
                     <div class="result-card p-6 mb-8">
-                        <label for="competitor-topic-input" class="block text-lg font-semibold mb-3 text-accent-primary">Channel Name or Topic</label>
+                        <label for="competitor-topic-input" class="block text-lg font-semibold mb-3 text-accent-primary">Channel URL or Handle</label>
                         <div class="flex flex-col sm:flex-row gap-4">
-                            <input type="text" id="competitor-topic-input" class="w-full custom-input" placeholder="e.g., 'MrBeast' or 'Tech Reviews'">
+                            <input type="text" id="competitor-topic-input" class="w-full custom-input" placeholder="e.g., https://www.youtube.com/@MrBeast">
                             <button id="find-competitors-btn" class="main-btn py-3 px-6 flex items-center justify-center whitespace-nowrap"><i class="fas fa-users mr-2"></i><span class="btn-text">Find Competitors</span><div class="spinner hidden w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div></button>
                         </div>
                         <p class="text-xs text-text-secondary mt-3 text-center">Note: All data is AI-estimated for analytical purposes only.</p>
@@ -409,49 +462,73 @@
             generatedTags: '', suggestedKeywords: '',
             subscribeLink: '', capitalizedTitle: '', embedCode: ''
         };
-
-        const pages = {
-            'home': document.getElementById('page-home'),
-            'content-generator': document.getElementById('page-content-generator'),
-            'script-generator': document.getElementById('page-script-generator'),
-            'prompt-generator': document.getElementById('page-prompt-generator'),
-            'channel-extractor': document.getElementById('page-channel-extractor'),
-            'tags-generator': document.getElementById('page-tags-generator'),
-            'keyword-suggester': document.getElementById('page-keyword-suggester'),
-            'thumbnail-downloader': document.getElementById('page-thumbnail-downloader'),
-            'find-competitors': document.getElementById('page-find-competitors'),
-            'subscribe-link': document.getElementById('page-subscribe-link'),
-            'money-calculator': document.getElementById('page-money-calculator'),
-            'title-capitalizer': document.getElementById('page-title-capitalizer'),
-            'embed-code': document.getElementById('page-embed-code'),
-        };
+        
+        const pages = {};
 
         // --- Initialization ---
-        function initializeApp() {
+        document.addEventListener('DOMContentLoaded', () => {
             Object.keys(pageTemplates).forEach(pageId => {
-                const pageElement = document.getElementById(`page-${pageId}`);
+                pages[pageId] = document.getElementById(`page-${pageId}`);
+                const pageElement = pages[pageId];
                 if (pageElement && pageTemplates[pageId]) {
                     pageElement.innerHTML = pageTemplates[pageId];
                 }
             });
 
+            const mainNav = document.getElementById('main-nav');
+            const homeToolsGrid = document.getElementById('home-tools-grid');
+            
+            tools.forEach(tool => {
+                // Populate sidebar
+                const navLink = document.createElement('a');
+                navLink.href = '#';
+                navLink.id = `nav-${tool.id}`;
+                navLink.dataset.page = tool.id;
+                navLink.className = 'nav-trigger sidebar-link flex items-center gap-4 p-3 rounded-lg hover:bg-tertiary transition-colors';
+                navLink.innerHTML = `<i class="${tool.icon} fa-fw sidebar-icon"></i><span>${tool.name}</span>`;
+                mainNav.appendChild(navLink);
+
+                // Populate home page grid
+                if (homeToolsGrid) {
+                    const toolCard = document.createElement('a');
+                    toolCard.href = '#';
+                    toolCard.className = 'nav-trigger result-card p-6 hover:border-accent-primary transition-colors';
+                    toolCard.dataset.page = tool.id;
+                    toolCard.innerHTML = `
+                        <i class="${tool.icon} fa-2x text-accent-primary mb-4"></i>
+                        <h3 class="text-xl font-bold mb-2">${tool.name}</h3>
+                        <p class="text-text-secondary text-sm">${tool.description}</p>
+                    `;
+                    homeToolsGrid.appendChild(toolCard);
+                }
+            });
+
             document.getElementById('nav-home').classList.add('active');
             Object.keys(pages).filter(p => p !== 'home').forEach(p => pages[p].classList.add('hidden'));
+            pages['home'].classList.remove('hidden');
 
             bindAllEventListeners();
-        }
+            startTypewriter();
+        });
 
         // --- Event Listeners Binding ---
         function bindAllEventListeners() {
             const get = (id) => document.getElementById(id);
 
-            document.querySelectorAll('.sidebar-link, #nav-home').forEach(link => {
+            document.querySelectorAll('.nav-trigger').forEach(link => {
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
-                    const pageId = link.id.replace('nav-', '');
+                    const pageId = link.dataset.page;
+                    
+                    const sidebar = get('sidebar');
+                    const overlay = get('overlay');
+                    if(sidebar && !sidebar.classList.contains('-translate-x-full')) {
+                        toggleMenu();
+                    }
+
                     if (pages[pageId]) {
-                        document.querySelectorAll('.sidebar-link, #nav-home').forEach(nav => nav.classList.remove('active'));
-                        link.classList.add('active');
+                        document.querySelectorAll('.sidebar-link').forEach(nav => nav.classList.remove('active'));
+                        get(`nav-${pageId}`)?.classList.add('active');
                         Object.values(pages).forEach(page => page.classList.add('hidden'));
                         pages[pageId].classList.remove('hidden');
                     } else {
@@ -459,6 +536,16 @@
                     }
                 });
             });
+            
+            document.querySelectorAll('.coming-soon-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    showPopup("This page is coming soon!", 'info');
+                });
+            });
+
+            get('hamburger-btn')?.addEventListener('click', toggleMenu);
+            get('overlay')?.addEventListener('click', toggleMenu);
 
             // Bind listeners for each page
             get('generate-content-btn')?.addEventListener('click', handleContentGeneration);
@@ -504,10 +591,15 @@
             get('copy-embed-btn')?.addEventListener('click', () => copyToClipboard(generatedData.embedCode));
         }
         
-        initializeApp();
-
 
         // --- Core Functions ---
+        function toggleMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
         function toggleButtonLoading(button, isLoading) {
             const btnText = button.querySelector('.btn-text');
             const spinner = button.querySelector('.spinner');
@@ -784,7 +876,7 @@
                     if (key && value) competitorData[key.trim()] = value.join(':').trim();
                 });
                 const channelName = competitorData['Channel Name'] || 'N/A';
-                const handle = competitorData['Handle'] || channelName.replace(/\s+/g, '');
+                const handle = (competitorData['Handle'] || channelName.replace(/\s+/g, '')).replace('@', '');
                 const channelUrl = `https://www.youtube.com/@${handle}`;
                 const profilePicUrl = `https://unavatar.io/youtube/${handle}`;
                 const card = document.createElement('div');
@@ -849,6 +941,42 @@
             generatedData.embedCode = embedCode;
             document.getElementById('embed-output').value = embedCode;
             document.getElementById('embed-results-wrapper').classList.remove('hidden');
+        }
+
+        // --- Typewriter Effect ---
+        function startTypewriter() {
+            const animatedText = document.getElementById('animated-text');
+            if (!animatedText) return;
+
+            const phrases = ["A Free Marketplace for AI Tools", "Powered by Team Mustafa Talks", "Powered by The Talks Automation"];
+            let phraseIndex = 0;
+            let charIndex = 0;
+            let isDeleting = false;
+
+            function type() {
+                const currentPhrase = phrases[phraseIndex];
+                if (isDeleting) {
+                    animatedText.textContent = currentPhrase.substring(0, charIndex - 1);
+                    charIndex--;
+                } else {
+                    animatedText.textContent = currentPhrase.substring(0, charIndex + 1);
+                    charIndex++;
+                }
+
+                let typeSpeed = isDeleting ? 50 : 150;
+
+                if (!isDeleting && charIndex === currentPhrase.length) {
+                    typeSpeed = 2000; // Pause at end
+                    isDeleting = true;
+                } else if (isDeleting && charIndex === 0) {
+                    isDeleting = false;
+                    phraseIndex = (phraseIndex + 1) % phrases.length;
+                    typeSpeed = 500; // Pause before new phrase
+                }
+
+                setTimeout(type, typeSpeed);
+            }
+            type();
         }
 
 
