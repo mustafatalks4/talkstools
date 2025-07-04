@@ -29,19 +29,34 @@
             --border-color: #2A2A2A;
         }
 
+        .light-mode {
+            --bg-primary: #F5F5F5;
+            --bg-secondary: #FFFFFF;
+            --bg-tertiary: #E5E5E5;
+            --text-primary: #1A1A1A;
+            --text-secondary: #525252;
+            --border-color: #D4D4D4;
+        }
+
         html {
             scroll-behavior: smooth;
         }
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
+            background-color: #0D0D0D; /* Always dark */
+            color: #FFFFFF; /* Always light text */
+        }
+        
+        #main-content {
+             background-color: var(--bg-primary);
+             color: var(--text-primary);
+             transition: background-color 0.3s, color 0.3s;
         }
 
         /* Custom scrollbar */
         ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        ::-webkit-scrollbar-track { background: #1A1A1A; }
         ::-webkit-scrollbar-thumb { background: var(--accent-primary); border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--accent-hover); }
 
@@ -70,7 +85,7 @@
         
         .main-btn {
             background-color: var(--accent-primary);
-            color: var(--bg-primary);
+            color: #0D0D0D;
             font-weight: 700;
             border-radius: 8px;
             transition: background-color 0.2s ease-in-out, transform 0.2s ease;
@@ -81,25 +96,35 @@
         }
 
         .secondary-btn {
-            background-color: var(--bg-tertiary);
-            color: var(--text-primary);
+            background-color: #2A2A2A;
+            color: #FFFFFF;
             font-weight: 600;
             border-radius: 8px;
-            border: 1px solid var(--border-color);
+            border: 1px solid #2A2A2A;
             transition: background-color 0.2s ease-in-out, transform 0.2s ease;
         }
         .secondary-btn:hover {
             background-color: #3a3a3a;
         }
+        .light-mode .secondary-btn {
+             background-color: var(--bg-tertiary);
+             color: var(--text-primary);
+             border: 1px solid var(--border-color);
+        }
+         .light-mode .secondary-btn:hover {
+            background-color: #d4d4d4;
+        }
 
-        .custom-input, .custom-select {
+
+        .custom-input, .custom-select, .custom-textarea {
             background-color: var(--bg-secondary);
             border: 1px solid var(--border-color);
             border-radius: 8px;
             color: var(--text-primary);
             padding: 0.75rem 1rem;
+            transition: background-color 0.3s, border-color 0.3s;
         }
-        .custom-input:focus, .custom-select:focus {
+        .custom-input:focus, .custom-select:focus, .custom-textarea:focus {
             outline: none;
             border-color: var(--accent-primary);
             box-shadow: 0 0 0 2px rgba(0, 255, 163, 0.3);
@@ -109,6 +134,12 @@
             background-color: var(--bg-secondary);
             border: 1px solid var(--border-color);
             border-radius: 12px;
+            transition: background-color 0.3s, border-color 0.3s, transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+        .tool-card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         }
         
         /* Hide number input arrows */
@@ -124,20 +155,28 @@
 </head>
 <body class="h-screen flex flex-col">
     
+    <!-- Preloader -->
+    <div id="preloader" class="fixed inset-0 bg-[#0D0D0D] z-[100] flex items-center justify-center transition-opacity duration-500">
+        <div class="w-16 h-16 border-4 border-accent-primary border-t-transparent rounded-full animate-spin"></div>
+    </div>
+
     <!-- Main Header -->
-    <header class="w-full bg-zinc-900/80 backdrop-blur-md border-b border-border-color z-40 flex-shrink-0">
+    <header class="w-full bg-[#1A1A1A] border-b border-[#2A2A2A] z-40 flex-shrink-0">
         <div class="container mx-auto flex justify-between items-center p-4">
             <a href="#" data-page="home" class="nav-trigger flex items-center gap-2">
                 <i class="fas fa-bolt fa-lg text-accent-primary"></i>
                 <h1 class="text-xl font-bold">Talks Tools</h1>
             </a>
             <nav class="hidden md:flex items-center gap-6">
-                 <a href="#" data-page="home" class="nav-trigger text-text-secondary hover:text-text-primary transition-colors">Home</a>
-                 <a href="#" class="coming-soon-link text-text-secondary hover:text-text-primary transition-colors">Privacy</a>
-                 <a href="#" class="coming-soon-link text-text-secondary hover:text-text-primary transition-colors">Contact</a>
-                 <a href="#" class="coming-soon-link text-text-secondary hover:text-text-primary transition-colors">Services</a>
-                 <a href="#" class="coming-soon-link text-text-secondary hover:text-text-primary transition-colors">About</a>
+                 <a href="#" data-page="home" class="nav-trigger text-[#A3A3A3] hover:text-white transition-colors">Home</a>
+                 <a href="#" class="coming-soon-link text-[#A3A3A3] hover:text-white transition-colors">Privacy</a>
+                 <a href="#" class="coming-soon-link text-[#A3A3A3] hover:text-white transition-colors">Contact</a>
+                 <a href="#" class="coming-soon-link text-[#A3A3A3] hover:text-white transition-colors">Services</a>
+                 <a href="#" class="coming-soon-link text-[#A3A3A3] hover:text-white transition-colors">About</a>
                  <a href="#" class="coming-soon-link text-text-secondary hover:text-text-primary transition-colors">Blog</a>
+                 <button id="theme-toggle" class="text-[#A3A3A3] hover:text-white transition-colors text-lg">
+                    <i class="fas fa-sun"></i>
+                 </button>
             </nav>
             <button id="hamburger-btn" class="p-2 text-2xl md:hidden">
                 <i class="fas fa-bars"></i>
@@ -147,7 +186,7 @@
 
     <div class="flex flex-1 overflow-hidden">
         <!-- Sidebar Navigation -->
-        <aside id="sidebar" class="fixed top-0 left-0 w-64 h-full bg-zinc-900 border-r border-border-color p-4 flex-col justify-between transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out z-50 md:flex">
+        <aside id="sidebar" class="fixed top-0 left-0 w-64 h-full bg-[#1A1A1A] border-r border-[#2A2A2A] p-4 flex-col justify-between transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out z-50 md:flex">
             <div class="flex flex-col h-full">
                 <a href="#" data-page="home" id="nav-home" class="nav-trigger hidden md:flex items-center gap-3 mb-10 px-2">
                     <i class="fas fa-bolt fa-2x text-accent-primary"></i>
@@ -158,12 +197,12 @@
                 </nav>
             </div>
              <div class="mt-auto px-2 pt-4 flex-shrink-0">
-                <p class="text-xs text-text-secondary">Powered by The Talks Automation</p>
+                <p class="text-xs text-[#A3A3A3]">Powered by The Talks Automation</p>
             </div>
         </aside>
         
         <!-- Overlay for mobile menu -->
-        <div id="overlay" class="fixed inset-0 bg-zinc-900/90 backdrop-blur-sm z-40 hidden md:hidden"></div>
+        <div id="overlay" class="fixed inset-0 bg-[#1A1A1A]/90 backdrop-blur-sm z-40 hidden md:hidden"></div>
 
         <!-- Main Content Area -->
         <div id="main-content" class="flex-1 overflow-y-auto">
@@ -181,20 +220,37 @@
             <main id="page-money-calculator" class="p-4 sm:p-6 md:p-8 hidden"></main>
             <main id="page-title-capitalizer" class="p-4 sm:p-6 md:p-8 hidden"></main>
             <main id="page-embed-code" class="p-4 sm:p-6 md:p-8 hidden"></main>
+            <main id="page-blog-post-generator" class="p-4 sm:p-6 md:p-8 hidden"></main>
+            
+            <footer class="text-center p-6 mt-8 border-t border-border-color">
+                <div class="max-w-md mx-auto mb-6">
+                    <h4 class="text-lg font-bold mb-2 text-accent-primary">Get Notified</h4>
+                    <p class="text-sm text-text-secondary mb-4">Subscribe to get notified when new tools go live.</p>
+                    <!-- 
+                        HOW TO USE THIS FORM:
+                        1. Go to https://formspree.io/ and create a free account.
+                        2. Create a new form and get your unique endpoint URL.
+                        3. Replace the placeholder URL in the 'action' attribute below with your Formspree URL.
+                    -->
+                    <form action="https://formspree.io/f/YOUR_UNIQUE_ID" method="POST" class="flex flex-col sm:flex-row gap-2">
+                        <input type="email" name="email" class="w-full custom-input" placeholder="Enter your email" required>
+                        <button type="submit" class="main-btn py-3 px-6 whitespace-nowrap">Notify Me</button>
+                    </form>
+                </div>
+                <div class="flex justify-center gap-6 mb-4">
+                    <a href="#" class="text-text-secondary hover:text-accent-primary transition-colors"><i class="fab fa-youtube fa-lg"></i></a>
+                    <a href="#" class="text-text-secondary hover:text-accent-primary transition-colors"><i class="fab fa-twitter fa-lg"></i></a>
+                    <a href="#" class="text-text-secondary hover:text-accent-primary transition-colors"><i class="fab fa-instagram fa-lg"></i></a>
+                </div>
+                <p class="text-sm text-text-secondary">&copy; 2025 Talks Tools. All Rights Reserved.</p>
+            </footer>
         </div>
     </div>
     
-    <footer class="w-full bg-zinc-900 border-t border-border-color z-40 flex-shrink-0">
-        <div class="container mx-auto text-center p-4">
-            <div class="flex justify-center gap-6 mb-2">
-                <a href="#" class="text-text-secondary hover:text-accent-primary transition-colors"><i class="fab fa-youtube fa-lg"></i></a>
-                <a href="#" class="text-text-secondary hover:text-accent-primary transition-colors"><i class="fab fa-twitter fa-lg"></i></a>
-                <a href="#" class="text-text-secondary hover:text-accent-primary transition-colors"><i class="fab fa-instagram fa-lg"></i></a>
-            </div>
-            <p class="text-sm text-text-secondary">&copy; 2025 Talks Tools. All Rights Reserved.</p>
-        </div>
-    </footer>
-
+    <!-- Scroll to Top Button -->
+    <button id="scroll-to-top" class="fixed bottom-5 right-5 w-12 h-12 bg-accent-primary text-primary rounded-full hidden justify-center items-center shadow-lg transition-all duration-300 opacity-0 hover:bg-accent-hover z-20">
+        <i class="fas fa-arrow-up"></i>
+    </button>
 
     <!-- Generic Pop-Up -->
     <div id="popup" class="fixed bottom-5 right-5 text-white p-4 rounded-xl shadow-2xl z-50 transition-all duration-300 transform translate-y-20 opacity-0">
@@ -204,16 +260,17 @@
     <script>
         // --- API Configuration ---
         const API_KEY = "AIzaSyCO18Y_YH9AGDKz8cwuswCRsvtLfAtYBYA";
-
-  // --- Maintenance Mode ---
-        // Set to 'true' to enable maintenance mode, 'false' to disable.
-        const isMaintenanceMode = true;
         
+        // --- Maintenance Mode ---
+        // Set to 'true' to enable maintenance mode, 'false' to disable.
+        const isMaintenanceMode = false;
+
         // --- Tool Definitions ---
         const tools = [
             { id: 'content-generator', name: 'Content Generator', icon: 'fas fa-magic', description: 'Instantly create SEO-optimized titles, descriptions, and tags.' },
             { id: 'script-generator', name: 'Script Generator', icon: 'fas fa-file-alt', description: 'Generate complete video scripts in any language or tone.' },
             { id: 'prompt-generator', name: 'Prompt Generator', icon: 'fas fa-lightbulb', description: 'Craft expert-level prompts for AI image, video, and text generation.' },
+            { id: 'blog-post-generator', name: 'Blog Post Writer', icon: 'fas fa-pen-alt', description: 'Generate complete, SEO-friendly blog posts from a topic.' },
             { id: 'channel-extractor', name: 'Channel Extractor', icon: 'fab fa-youtube', description: 'Extract data and generate new content from any YouTube video.' },
             { id: 'tags-generator', name: 'Video Tags Generator', icon: 'fas fa-tags', description: 'Generate optimized tags from a YouTube video URL.' },
             { id: 'keyword-suggester', name: 'Keyword Suggester', icon: 'fas fa-key', description: 'Get relevant keywords and tags for your video topic.' },
@@ -246,7 +303,7 @@
                 </div>`,
             'content-generator': `
                 <div class="max-w-4xl mx-auto">
-                    <header class="mb-8"><h2 class="text-3xl font-extrabold">AI Content Generator</h2><p class="text-text-secondary mt-1">Create optimized Titles, Descriptions, and Tags.</p></header>
+                    <header class="mb-8 flex items-center gap-4"><button class="nav-trigger secondary-btn p-2 h-10 w-10" data-page="home"><i class="fas fa-arrow-left"></i></button><div><h2 class="text-3xl font-extrabold">AI Content Generator</h2><p class="text-text-secondary mt-1">Create optimized Titles, Descriptions, and Tags.</p></div></header>
                     <div class="result-card p-6 mb-8">
                         <label for="content-keyword-input" class="block text-lg font-semibold mb-3 text-accent-primary">Video Topic</label>
                         <div class="flex flex-col sm:flex-row gap-4">
@@ -263,7 +320,7 @@
                 </div>`,
             'script-generator': `
                 <div class="max-w-4xl mx-auto">
-                    <header class="mb-8"><h2 class="text-3xl font-extrabold">AI Script Generator</h2><p class="text-text-secondary mt-1">Generate a complete video script in any language and tone.</p></header>
+                    <header class="mb-8 flex items-center gap-4"><button class="nav-trigger secondary-btn p-2 h-10 w-10" data-page="home"><i class="fas fa-arrow-left"></i></button><div><h2 class="text-3xl font-extrabold">AI Script Generator</h2><p class="text-text-secondary mt-1">Generate a complete video script in any language and tone.</p></div></header>
                     <div class="result-card p-6 mb-8">
                         <h3 class="text-xl font-bold mb-4">Need help with a video idea?</h3>
                         <button id="show-idea-helper-btn" class="secondary-btn w-full py-2 px-4 flex items-center justify-center"><i class="fas fa-search mr-2"></i>Generate Video Ideas</button>
@@ -290,7 +347,7 @@
                 </div>`,
             'prompt-generator': `
                  <div class="max-w-4xl mx-auto">
-                    <header class="mb-8"><h2 class="text-3xl font-extrabold">AI Prompt Generator</h2><p class="text-text-secondary mt-1">Craft expert-level prompts for any AI model.</p></header>
+                    <header class="mb-8 flex items-center gap-4"><button class="nav-trigger secondary-btn p-2 h-10 w-10" data-page="home"><i class="fas fa-arrow-left"></i></button><div><h2 class="text-3xl font-extrabold">AI Prompt Generator</h2><p class="text-text-secondary mt-1">Craft expert-level prompts for any AI model.</p></div></header>
                     <div class="result-card p-6 mb-8">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
                             <div class="col-span-1 md:col-span-2"><label for="prompt-topic-input" class="block text-sm font-semibold mb-2 text-accent-primary">Your Topic / Idea</label><input type="text" id="prompt-topic-input" class="w-full custom-input" placeholder="e.g., 'A haunted spaceship' or 'A summary of climate change'"></div>
@@ -304,7 +361,7 @@
                 </div>`,
             'channel-extractor': `
                 <div class="max-w-4xl mx-auto">
-                    <header class="mb-8"><h2 class="text-3xl font-extrabold">Channel Extractor</h2><p class="text-text-secondary mt-1">Extract data and generate new content from any YouTube video.</p></header>
+                    <header class="mb-8 flex items-center gap-4"><button class="nav-trigger secondary-btn p-2 h-10 w-10" data-page="home"><i class="fas fa-arrow-left"></i></button><div><h2 class="text-3xl font-extrabold">Channel Extractor</h2><p class="text-text-secondary mt-1">Extract data and generate new content from any YouTube video.</p></div></header>
                     <div class="result-card p-6 mb-8">
                         <label for="extractor-url-input" class="block text-lg font-semibold mb-3 text-accent-primary">YouTube Video URL</label>
                         <div class="flex flex-col sm:flex-row gap-4">
@@ -336,7 +393,7 @@
                 </div>`,
             'tags-generator': `
                  <div class="max-w-4xl mx-auto">
-                    <header class="mb-8"><h2 class="text-3xl font-extrabold">Video Tags Generator</h2><p class="text-text-secondary mt-1">Generate optimized tags from a YouTube video URL.</p></header>
+                    <header class="mb-8 flex items-center gap-4"><button class="nav-trigger secondary-btn p-2 h-10 w-10" data-page="home"><i class="fas fa-arrow-left"></i></button><div><h2 class="text-3xl font-extrabold">Video Tags Generator</h2><p class="text-text-secondary mt-1">Generate optimized tags from a YouTube video URL.</p></div></header>
                     <div class="result-card p-6 mb-8">
                         <label for="tags-url-input" class="block text-lg font-semibold mb-3 text-accent-primary">YouTube Video URL</label>
                         <div class="flex flex-col sm:flex-row gap-4">
@@ -351,7 +408,7 @@
                 </div>`,
             'keyword-suggester': `
                  <div class="max-w-4xl mx-auto">
-                    <header class="mb-8"><h2 class="text-3xl font-extrabold">Keyword Suggester</h2><p class="text-text-secondary mt-1">Get relevant keywords for your video topic.</p></header>
+                    <header class="mb-8 flex items-center gap-4"><button class="nav-trigger secondary-btn p-2 h-10 w-10" data-page="home"><i class="fas fa-arrow-left"></i></button><div><h2 class="text-3xl font-extrabold">Keyword Suggester</h2><p class="text-text-secondary mt-1">Get relevant keywords for your video topic.</p></div></header>
                     <div class="result-card p-6 mb-8">
                         <label for="keyword-suggester-input" class="block text-lg font-semibold mb-3 text-accent-primary">Video Title or Topic</label>
                         <div class="flex flex-col sm:flex-row gap-4">
@@ -366,7 +423,7 @@
                 </div>`,
             'thumbnail-downloader': `
                  <div class="max-w-4xl mx-auto">
-                    <header class="mb-8"><h2 class="text-3xl font-extrabold">Thumbnail Downloader</h2><p class="text-text-secondary mt-1">Download any YouTube video's thumbnail in high quality.</p></header>
+                    <header class="mb-8 flex items-center gap-4"><button class="nav-trigger secondary-btn p-2 h-10 w-10" data-page="home"><i class="fas fa-arrow-left"></i></button><div><h2 class="text-3xl font-extrabold">Thumbnail Downloader</h2><p class="text-text-secondary mt-1">Download any YouTube video's thumbnail in high quality.</p></div></header>
                     <div class="result-card p-6 mb-8">
                         <label for="thumbnail-url-input" class="block text-lg font-semibold mb-3 text-accent-primary">YouTube Video URL</label>
                         <div class="flex flex-col sm:flex-row gap-4">
@@ -382,7 +439,7 @@
                 </div>`,
             'find-competitors': `
                  <div class="max-w-4xl mx-auto">
-                    <header class="mb-8"><h2 class="text-3xl font-extrabold">Find Competitors</h2><p class="text-text-secondary mt-1">Get AI-powered analysis of competitor channels.</p></header>
+                    <header class="mb-8 flex items-center gap-4"><button class="nav-trigger secondary-btn p-2 h-10 w-10" data-page="home"><i class="fas fa-arrow-left"></i></button><div><h2 class="text-3xl font-extrabold">Find Competitors</h2><p class="text-text-secondary mt-1">Get AI-powered analysis of competitor channels.</p></div></header>
                     <div class="result-card p-6 mb-8">
                         <label for="competitor-topic-input" class="block text-lg font-semibold mb-3 text-accent-primary">Channel URL or Handle</label>
                         <div class="flex flex-col sm:flex-row gap-4">
@@ -397,7 +454,7 @@
                 </div>`,
             'subscribe-link': `
                 <div class="max-w-4xl mx-auto">
-                    <header class="mb-8"><h2 class="text-3xl font-extrabold">Subscribe Link Generator</h2><p class="text-text-secondary mt-1">Create a link that prompts users to subscribe.</p></header>
+                    <header class="mb-8 flex items-center gap-4"><button class="nav-trigger secondary-btn p-2 h-10 w-10" data-page="home"><i class="fas fa-arrow-left"></i></button><div><h2 class="text-3xl font-extrabold">Subscribe Link Generator</h2><p class="text-text-secondary mt-1">Create a link that prompts users to subscribe.</p></div></header>
                     <div class="result-card p-6 mb-8">
                         <label for="subscribe-url-input" class="block text-lg font-semibold mb-3 text-accent-primary">Your YouTube Channel URL</label>
                         <div class="flex flex-col sm:flex-row gap-4">
@@ -412,7 +469,7 @@
                 </div>`,
             'money-calculator': `
                 <div class="max-w-4xl mx-auto">
-                    <header class="mb-8"><h2 class="text-3xl font-extrabold">YouTube Money Calculator</h2><p class="text-text-secondary mt-1">Estimate your potential earnings.</p></header>
+                    <header class="mb-8 flex items-center gap-4"><button class="nav-trigger secondary-btn p-2 h-10 w-10" data-page="home"><i class="fas fa-arrow-left"></i></button><div><h2 class="text-3xl font-extrabold">YouTube Money Calculator</h2><p class="text-text-secondary mt-1">Estimate your potential earnings.</p></div></header>
                     <div class="result-card p-6 mb-8">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div><label for="calculator-views-input" class="block text-sm font-semibold mb-2 text-accent-primary">Daily Views</label><input type="number" id="calculator-views-input" class="w-full custom-input" placeholder="e.g., 50000"></div>
@@ -427,7 +484,7 @@
                 </div>`,
             'title-capitalizer': `
                 <div class="max-w-4xl mx-auto">
-                    <header class="mb-8"><h2 class="text-3xl font-extrabold">Video Title Capitalizer</h2><p class="text-text-secondary mt-1">Properly capitalize your video titles.</p></header>
+                    <header class="mb-8 flex items-center gap-4"><button class="nav-trigger secondary-btn p-2 h-10 w-10" data-page="home"><i class="fas fa-arrow-left"></i></button><div><h2 class="text-3xl font-extrabold">Video Title Capitalizer</h2><p class="text-text-secondary mt-1">Properly capitalize your video titles.</p></div></header>
                     <div class="result-card p-6 mb-8">
                         <label for="capitalize-input" class="block text-lg font-semibold mb-3 text-accent-primary">Enter Title Here</label>
                         <textarea id="capitalize-input" class="w-full custom-input min-h-[100px]" placeholder="e.g., my awesome new video about tech"></textarea>
@@ -440,7 +497,7 @@
                 </div>`,
             'embed-code': `
                 <div class="max-w-4xl mx-auto">
-                    <header class="mb-8"><h2 class="text-3xl font-extrabold">YouTube Embed Code Generator</h2><p class="text-text-secondary mt-1">Create embed codes for your videos.</p></header>
+                    <header class="mb-8 flex items-center gap-4"><button class="nav-trigger secondary-btn p-2 h-10 w-10" data-page="home"><i class="fas fa-arrow-left"></i></button><div><h2 class="text-3xl font-extrabold">YouTube Embed Code Generator</h2><p class="text-text-secondary mt-1">Create embed codes for your videos.</p></div></header>
                     <div class="result-card p-6 mb-8">
                         <label for="embed-url-input" class="block text-lg font-semibold mb-3 text-accent-primary">YouTube Video URL</label>
                         <input type="text" id="embed-url-input" class="w-full custom-input" placeholder="e.g., https://www.youtube.com/watch?v=...">
@@ -455,6 +512,40 @@
                         <textarea id="embed-output" class="w-full custom-input min-h-[150px]" readonly></textarea>
                     </div>
                 </div>`,
+             'blog-post-generator': `
+                <div class="max-w-4xl mx-auto">
+                    <header class="mb-8 flex items-center gap-4"><button class="nav-trigger secondary-btn p-2 h-10 w-10" data-page="home"><i class="fas fa-arrow-left"></i></button><div><h2 class="text-3xl font-extrabold">AI Blog Post Writer</h2><p class="text-text-secondary mt-1">Generate SEO-optimized, human-like blog posts.</p></div></header>
+                    <div class="result-card p-6 mb-8">
+                        <h3 class="text-xl font-bold mb-4">Need help with a blog idea?</h3>
+                        <button id="show-blog-idea-helper-btn" class="secondary-btn w-full py-2 px-4 flex items-center justify-center"><i class="fas fa-search mr-2"></i>Generate Blog Ideas</button>
+                        <div id="blog-idea-helper-ui" class="hidden mt-4 pt-4 border-t border-border-color">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                 <div><label for="blog-idea-category-select" class="block text-sm font-semibold mb-2 text-accent-primary">Category</label><select id="blog-idea-category-select" class="w-full custom-select"><option value="Technology">Technology</option><option value="Marketing">Marketing</option><option value="Finance">Finance</option><option value="Health">Health</option><option value="Travel">Travel</option></select></div>
+                                 <div><label for="blog-idea-keyword-input" class="block text-sm font-semibold mb-2 text-accent-primary">Keyword</label><input type="text" id="blog-idea-keyword-input" class="w-full custom-input" placeholder="e.g., 'AI trends' or 'budget travel'"></div>
+                            </div>
+                            <button id="generate-blog-ideas-btn" class="main-btn w-full py-2 px-4 mt-4 flex items-center justify-center"><i class="fas fa-lightbulb mr-2"></i><span class="btn-text">Get 5 Ideas</span><div class="spinner hidden w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div></button>
+                            <div id="blog-ideas-output" class="mt-4 space-y-2"></div>
+                        </div>
+                    </div>
+                    <div class="result-card p-6 mb-8">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                            <div class="col-span-1 md:col-span-2"><label for="blog-topic-input" class="block text-sm font-semibold mb-2 text-accent-primary">Topic, Title, or Article Link</label><textarea id="blog-topic-input" class="w-full custom-textarea min-h-[100px]" placeholder="e.g., 'The future of renewable energy' or paste a link for inspiration"></textarea></div>
+                            <div><label for="blog-style-select" class="block text-sm font-semibold mb-2 text-accent-primary">Writing Style</label><select id="blog-style-select" class="w-full custom-select"><option value="Professional">Professional</option><option value="Casual & Conversational">Casual & Conversational</option><option value="Tech News Report">Tech News Report</option><option value="Tutorial / How-To Guide">Tutorial / How-To Guide</option><option value="Listicle">Listicle</option><option value="Opinion Piece">Opinion Piece</option></select></div>
+                            <div><label for="blog-words-input" class="block text-sm font-semibold mb-2 text-accent-primary">Approximate Word Count</label><input type="number" id="blog-words-input" class="w-full custom-input" placeholder="e.g., 1500"></div>
+                            <div class="col-span-1 md:col-span-2 space-y-2">
+                                <div class="flex items-center gap-2"><input type="checkbox" id="blog-images-check" class="h-4 w-4 rounded"><label for="blog-images-check">Include Image Prompts?</label></div>
+                                <div id="blog-image-prompts-container" class="hidden flex-1 pl-6"><label for="blog-image-prompts-input" class="text-sm">Number of image prompts:</label><input type="number" id="blog-image-prompts-input" class="w-20 custom-input ml-2" value="3" min="1"></div>
+                                <div class="flex items-center gap-2"><input type="checkbox" id="blog-deep-thinker-check" class="h-4 w-4 rounded"><label for="blog-deep-thinker-check">Make Content More In-depth</label></div>
+                                <div class="flex items-center gap-2"><input type="checkbox" id="blog-references-check" class="h-4 w-4 rounded"><label for="blog-references-check">Include Reference Links</label></div>
+                            </div>
+                        </div>
+                        <div class="mt-6"><button id="generate-blog-btn" class="main-btn w-full py-3 px-6 flex items-center justify-center"><i class="fas fa-pen-alt mr-2"></i><span class="btn-text">Write Blog Post</span><div class="spinner hidden w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div></button></div>
+                    </div>
+                    <div id="blog-results-wrapper" class="space-y-6 hidden">
+                        <div class="result-card p-6"><div class="flex justify-between items-center mb-4"><h3 class="text-2xl font-bold">Generated Blog Post</h3><button class="copy-btn text-text-secondary hover:text-accent-primary" title="Copy Blog Post" id="copy-blog-btn"><i class="fas fa-copy text-lg"></i></button></div><div id="blog-output" class="prose prose-invert max-w-none text-text-secondary whitespace-pre-wrap"></div></div>
+                        <div id="blog-prompts-results-wrapper" class="result-card p-6 hidden"><h3 class="text-2xl font-bold mb-4">Image Prompts</h3><div id="blog-prompts-output" class="space-y-4"></div></div>
+                    </div>
+                </div>`,
         };
 
         // --- State ---
@@ -464,7 +555,8 @@
             script: '', prompts: [], 
             extractorTitle: '', extractorDesc: '', extractorTags: '', 
             generatedTags: '', suggestedKeywords: '',
-            subscribeLink: '', capitalizedTitle: '', embedCode: ''
+            subscribeLink: '', capitalizedTitle: '', embedCode: '',
+            blogContent: '', blogImagePrompts: ''
         };
         
         const pages = {};
@@ -496,7 +588,7 @@
                 if (homeToolsGrid) {
                     const toolCard = document.createElement('a');
                     toolCard.href = '#';
-                    toolCard.className = 'nav-trigger result-card p-6 hover:border-accent-primary transition-colors';
+                    toolCard.className = 'nav-trigger result-card p-6 hover:border-accent-primary transition-colors tool-card-hover';
                     toolCard.dataset.page = tool.id;
                     toolCard.innerHTML = `
                         <i class="${tool.icon} fa-2x text-accent-primary mb-4"></i>
@@ -513,6 +605,19 @@
 
             bindAllEventListeners();
             startTypewriter();
+            
+            if (isMaintenanceMode) {
+                document.getElementById('maintenance-overlay').style.display = 'flex';
+            }
+            
+            // Hide preloader
+            setTimeout(() => {
+                const preloader = document.getElementById('preloader');
+                if (preloader) {
+                    preloader.style.opacity = '0';
+                    setTimeout(() => preloader.style.display = 'none', 500);
+                }
+            }, 1500);
         });
 
         // --- Event Listeners Binding ---
@@ -550,6 +655,7 @@
 
             get('hamburger-btn')?.addEventListener('click', toggleMenu);
             get('overlay')?.addEventListener('click', toggleMenu);
+            get('theme-toggle')?.addEventListener('click', toggleTheme);
 
             // Bind listeners for each page
             get('generate-content-btn')?.addEventListener('click', handleContentGeneration);
@@ -593,6 +699,35 @@
 
             get('generate-embed-btn')?.addEventListener('click', handleEmbedCodeGeneration);
             get('copy-embed-btn')?.addEventListener('click', () => copyToClipboard(generatedData.embedCode));
+
+            get('show-blog-idea-helper-btn')?.addEventListener('click', () => get('blog-idea-helper-ui').classList.toggle('hidden'));
+            get('generate-blog-ideas-btn')?.addEventListener('click', handleBlogIdeaGeneration);
+            get('blog-images-check')?.addEventListener('change', (e) => {
+                get('blog-image-prompts-container').classList.toggle('hidden', !e.target.checked);
+            });
+            get('generate-blog-btn')?.addEventListener('click', handleBlogPostGeneration);
+            get('copy-blog-btn')?.addEventListener('click', () => copyToClipboard(generatedData.blogContent));
+            
+            const mainContent = get('main-content');
+            const scrollToTopBtn = get('scroll-to-top');
+            mainContent?.addEventListener('scroll', () => {
+                if (mainContent.scrollTop > 200) {
+                    scrollToTopBtn.classList.remove('hidden');
+                    scrollToTopBtn.classList.add('flex');
+                    scrollToTopBtn.style.opacity = '1';
+                } else {
+                    scrollToTopBtn.style.opacity = '0';
+                    setTimeout(() => {
+                        if (mainContent.scrollTop <= 200) {
+                           scrollToTopBtn.classList.add('hidden');
+                           scrollToTopBtn.classList.remove('flex');
+                        }
+                    }, 300);
+                }
+            });
+            scrollToTopBtn?.addEventListener('click', () => {
+                mainContent.scrollTo({ top: 0, behavior: 'smooth' });
+            });
         }
         
 
@@ -946,6 +1081,110 @@
             document.getElementById('embed-output').value = embedCode;
             document.getElementById('embed-results-wrapper').classList.remove('hidden');
         }
+        
+        // --- Blog Post Generator Logic ---
+        async function handleBlogPostGeneration() {
+            const topic = document.getElementById('blog-topic-input').value.trim();
+            const style = document.getElementById('blog-style-select').value;
+            const words = document.getElementById('blog-words-input').value.trim();
+            const includeImages = document.getElementById('blog-images-check').checked;
+            const numImagePrompts = document.getElementById('blog-image-prompts-input').value;
+            const isDeepThinker = document.getElementById('blog-deep-thinker-check').checked;
+            const includeRefs = document.getElementById('blog-references-check').checked;
+
+            if (!topic || !words) { showPopup("Please provide a topic and word count.", 'error'); return; }
+            toggleButtonLoading(document.getElementById('generate-blog-btn'), true);
+            document.getElementById('blog-results-wrapper').classList.add('hidden');
+            document.getElementById('blog-prompts-results-wrapper').classList.add('hidden');
+
+            let prompt = `Write a high-quality, SEO-optimized, and human-like blog post.
+            Topic/Reference: "${topic}"
+            Writing Style: ${style}
+            Approximate Word Count: ${words} words.
+            
+            The blog post should have a clear structure with a catchy title, an engaging introduction, well-organized body paragraphs with headings, and a concluding summary. Ensure the content is informative and easy to read.
+            `;
+            
+            if (isDeepThinker) {
+                prompt += "Adopt a more analytical and in-depth 'deep thinker' persona, adding nuance and unique insights. "
+            } else {
+                 prompt += "The tone should feel like it was written by a human expert on the topic. "
+            }
+
+            if (includeImages) {
+                prompt += `\n\nAfter the blog post, create a separate section with the heading "---IMAGE PROMPTS---". In this section, provide ${numImagePrompts} detailed text-to-image prompts suitable for generating relevant images for this blog post. Each prompt should be on a new line.`
+            }
+            
+            if (includeRefs) {
+                prompt += `\n\nAt the very end of the blog post, include a "References" section with 2-3 relevant URLs.`
+            }
+
+
+            const response = await callGeminiAPI(prompt);
+            if (response) {
+                const parts = response.split('---IMAGE PROMPTS---');
+                const blogContent = parts[0].trim();
+                generatedData.blogContent = blogContent;
+                document.getElementById('blog-output').innerText = blogContent;
+                
+                if (includeImages && parts[1]) {
+                    const prompts = parts[1].trim().split('\n').filter(p => p.trim() !== '');
+                    displayBlogImagePrompts(prompts);
+                    document.getElementById('blog-prompts-results-wrapper').classList.remove('hidden');
+                }
+                document.getElementById('blog-results-wrapper').classList.remove('hidden');
+            }
+            toggleButtonLoading(document.getElementById('generate-blog-btn'), false);
+        }
+        
+        async function handleBlogIdeaGeneration() {
+            const category = document.getElementById('blog-idea-category-select').value;
+            const keyword = document.getElementById('blog-idea-keyword-input').value.trim();
+            if (!keyword) { showPopup("Please enter a keyword for your idea.", 'error'); return; }
+            toggleButtonLoading(document.getElementById('generate-blog-ideas-btn'), true);
+            document.getElementById('blog-ideas-output').innerHTML = '';
+            const prompt = `Based on the category "${category}" and the keyword "${keyword}", generate 5 unique and engaging blog post titles or topics. Separate each idea with "|||".`;
+            const response = await callGeminiAPI(prompt);
+            if (response) {
+                const ideas = response.split('|||').map(i => i.trim()).filter(Boolean);
+                displayBlogIdeas(ideas);
+            }
+            toggleButtonLoading(document.getElementById('generate-blog-ideas-btn'), false);
+        }
+
+        function displayBlogIdeas(ideas) {
+            const ideasOutput = document.getElementById('blog-ideas-output');
+            const blogTopicInput = document.getElementById('blog-topic-input');
+            const ideaHelperUI = document.getElementById('blog-idea-helper-ui');
+            ideasOutput.innerHTML = '';
+            ideas.forEach(ideaText => {
+                const ideaBtn = document.createElement('button');
+                ideaBtn.className = 'w-full text-left p-3 bg-bg-tertiary rounded-lg hover:bg-accent-primary hover:text-bg-primary transition-colors';
+                ideaBtn.textContent = ideaText;
+                ideaBtn.addEventListener('click', () => {
+                    blogTopicInput.value = ideaText;
+                    blogTopicInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    ideaHelperUI.classList.add('hidden');
+                });
+                ideasOutput.appendChild(ideaBtn);
+            });
+        }
+
+
+        function displayBlogImagePrompts(prompts) {
+            const container = document.getElementById('blog-prompts-output');
+            container.innerHTML = '';
+            prompts.forEach((promptText, index) => {
+                const promptEl = document.createElement('div');
+                promptEl.className = 'bg-bg-primary p-3 rounded-lg flex justify-between items-center';
+                promptEl.innerHTML = `
+                    <p class="text-sm flex-grow mr-4">${promptText}</p>
+                    <button class="copy-btn text-text-secondary hover:text-accent-primary flex-shrink-0" title="Copy Prompt"><i class="fas fa-copy"></i></button>
+                `;
+                promptEl.querySelector('.copy-btn').addEventListener('click', () => copyToClipboard(promptText));
+                container.appendChild(promptEl);
+            });
+        }
 
         // --- Typewriter Effect ---
         function startTypewriter() {
@@ -1001,7 +1240,7 @@
 
         function getYouTubeID(url) {
             const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-            const match = url.match(regExp);
+            const match = url.match(RegExp);
             return (match && match[2].length === 11) ? match[2] : null;
         }
         
@@ -1056,6 +1295,21 @@
                 popup.classList.remove('translate-y-0', 'opacity-100');
                 popup.classList.add('translate-y-20', 'opacity-0');
             }, 3000);
+        }
+
+        function toggleTheme() {
+            const body = document.getElementById('main-content');
+            const themeToggle = document.getElementById('theme-toggle');
+            body.classList.toggle('light-mode');
+            const isLight = body.classList.contains('light-mode');
+            themeToggle.innerHTML = isLight ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+        }
+
+        // Check for saved theme
+        if (localStorage.getItem('theme') === 'light') {
+            document.getElementById('main-content').classList.add('light-mode');
+            document.getElementById('theme-toggle').innerHTML = '<i class="fas fa-moon"></i>';
         }
     </script>
 </body>
