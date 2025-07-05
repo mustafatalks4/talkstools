@@ -38,12 +38,28 @@
             background-color: var(--bg-primary);
             color: var(--text-primary);
         }
-
-        /* Custom scrollbar - Updated Color */
+        
+        /* Custom scrollbar for the entire page */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg-secondary); }
-        ::-webkit-scrollbar-thumb { background: var(--accent-hover); border-radius: 10px; transition: background-color 0.2s ease; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--accent-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--accent-primary); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-hover); }
+
+        /* Professional scrollbar for the sidebar navigation */
+        #main-nav::-webkit-scrollbar {
+            width: 6px;
+        }
+        #main-nav::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+        #main-nav::-webkit-scrollbar-thumb {
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+        }
+        #main-nav::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-primary);
+        }
+
 
         /* Animations */
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
@@ -115,6 +131,12 @@
             background-color: var(--bg-secondary);
             border: 1px solid var(--border-color);
             border-radius: 12px;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        
+        .result-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
 
         /* Hide number input arrows */
@@ -126,15 +148,40 @@
         input[type=number] {
             -moz-appearance: textfield;
         }
+        
+        /* Social Media Icon Hover Effects */
+        .social-link.youtube:hover { color: #FF0000; }
+        .social-link.facebook:hover { color: #1877F2; }
+        .social-link.whatsapp:hover { color: #25D366; }
+        
+        /* Header Nav Link Hover */
+        .header-nav-link {
+            position: relative;
+        }
+        .header-nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 50%;
+            background-color: var(--accent-primary);
+            transition: width 0.3s ease, left 0.3s ease;
+        }
+        .header-nav-link:hover::after {
+            width: 100%;
+            left: 0;
+        }
+
     </style>
 </head>
-<body class="h-screen flex flex-col">
+<body class="">
 
     <!-- Maintenance Mode Overlay - Updated UI -->
     <div id="maintenance-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden flex-col items-center justify-center text-center p-8">
         <i class="fas fa-wrench fa-3x text-white mb-4"></i>
         <h1 class="text-3xl font-bold text-white mb-2">Website Under Maintenance</h1>
-        <p class="text-text-secondary text-lg">Please wait some time we are upgrading the site also Adding new tools.</p>
+        <p class="text-text-secondary text-lg">Please wait some time.</p>
     </div>
 
     <!-- Main Header -->
@@ -145,16 +192,18 @@
                 <h1 class="text-xl font-bold">Talks Tools</h1>
             </a>
             <nav class="hidden md:flex items-center gap-6">
-                 <a href="#" data-page="home" class="nav-trigger text-text-secondary hover:text-text-primary transition-colors">Home</a>
-                 <a href="#" class="coming-soon-link text-text-secondary hover:text-text-primary transition-colors">Privacy</a>
-                 <a href="#" class="coming-soon-link text-text-secondary hover:text-text-primary transition-colors">Contact</a>
-                 <a href="#" class="coming-soon-link text-text-secondary hover:text-text-primary transition-colors">Services</a>
-                 <a href="#" class="coming-soon-link text-text-secondary hover:text-text-primary transition-colors">About</a>
-                 <a href="#" class="coming-soon-link text-text-secondary hover:text-text-primary transition-colors">Blog</a>
+                 <a href="#" data-page="home" class="nav-trigger header-nav-link text-text-secondary hover:text-text-primary transition-colors">Home</a>
+                 <a href="#" class="coming-soon-link header-nav-link text-text-secondary hover:text-text-primary transition-colors">Privacy</a>
+                 <a href="#" class="coming-soon-link header-nav-link text-text-secondary hover:text-text-primary transition-colors">Contact</a>
+                 <a href="#" class="coming-soon-link header-nav-link text-text-secondary hover:text-text-primary transition-colors">Services</a>
+                 <a href="#" class="coming-soon-link header-nav-link text-text-secondary hover:text-text-primary transition-colors">About</a>
+                 <a href="#" class="coming-soon-link header-nav-link text-text-secondary hover:text-text-primary transition-colors">Blog</a>
             </nav>
-            <button id="hamburger-btn" class="p-2 text-2xl md:hidden">
-                <i class="fas fa-bars"></i>
-            </button>
+            <div class="flex items-center gap-4">
+                <button id="hamburger-btn" class="p-2 text-2xl md:hidden">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
         </div>
     </header>
 
@@ -184,6 +233,7 @@
             <main id="page-home" class="p-4 sm:p-6 md:p-8"></main>
             <main id="page-content-generator" class="p-4 sm:p-6 md:p-8 hidden"></main>
             <main id="page-script-generator" class="p-4 sm:p-6 md:p-8 hidden"></main>
+            <main id="page-script-rewriter" class="p-4 sm:p-6 md:p-8 hidden"></main>
             <main id="page-prompt-generator" class="p-4 sm:p-6 md:p-8 hidden"></main>
             <main id="page-channel-extractor" class="p-4 sm:p-6 md:p-8 hidden"></main>
             <main id="page-tags-generator" class="p-4 sm:p-6 md:p-8 hidden"></main>
@@ -194,17 +244,21 @@
             <main id="page-money-calculator" class="p-4 sm:p-6 md:p-8 hidden"></main>
             <main id="page-title-capitalizer" class="p-4 sm:p-6 md:p-8 hidden"></main>
             <main id="page-embed-code" class="p-4 sm:p-6 md:p-8 hidden"></main>
+            <main id="page-image-compressor" class="p-4 sm:p-6 md:p-8 hidden"></main>
+            <main id="page-background-remover" class="p-4 sm:p-6 md:p-8 hidden"></main>
+            <main id="page-thumbnail-maker" class="p-4 sm:p-6 md:p-8 hidden"></main>
+            <main id="page-image-generation" class="p-4 sm:p-6 md:p-8 hidden"></main>
         </div>
     </div>
 
     <footer class="w-full bg-zinc-900 border-t border-border-color z-40 flex-shrink-0">
         <div class="container mx-auto text-center p-4">
             <div class="flex justify-center gap-6 mb-2">
-                <a href="#" class="text-text-secondary hover:text-accent-primary transition-colors"><i class="fab fa-youtube fa-lg"></i></a>
-                <a href="#" class="text-text-secondary hover:text-accent-primary transition-colors"><i class="fab fa-twitter fa-lg"></i></a>
-                <a href="#" class="text-text-secondary hover:text-accent-primary transition-colors"><i class="fab fa-instagram fa-lg"></i></a>
+                <a href="https://youtube.com/@themustafatalks" target="_blank" class="social-link youtube text-text-secondary hover:text-accent-primary transition-colors"><i class="fab fa-youtube fa-lg"></i></a>
+                <a href="https://www.facebook.com/mustafatalks/" target="_blank" class="social-link facebook text-text-secondary hover:text-accent-primary transition-colors"><i class="fab fa-facebook fa-lg"></i></a>
+                <a href="https://tinyurl.com/mustafatalks" target="_blank" class="social-link whatsapp text-text-secondary hover:text-accent-primary transition-colors"><i class="fab fa-whatsapp fa-lg"></i></a>
             </div>
-            <p class="text-sm text-text-secondary">&copy; 2025 Talks Tools. All Rights Reserved.</p>
+            <p class="text-sm text-gray-400">Powered by <span class="font-bold text-gray-300">The Talks Automation</span></p>
         </div>
     </footer>
 
@@ -213,21 +267,32 @@
     <div id="popup" class="fixed bottom-5 right-5 text-white p-4 rounded-xl shadow-2xl z-50 transition-all duration-300 transform translate-y-20 opacity-0">
         <p id="popup-text" class="font-semibold"></p>
     </div>
+    
+    <!-- Scroll to Top Button -->
+    <button id="scroll-to-top-btn" class="fixed bottom-5 left-5 bg-accent-primary text-bg-primary w-12 h-12 rounded-full shadow-lg hidden justify-center items-center text-2xl transition-opacity duration-300 z-50">
+        <i class="fas fa-arrow-up"></i>
+    </button>
 
     <script>
         // --- API Configuration ---
-        // IMPORTANT: Replace "YOUR_API_KEY" with your actual Google AI Gemini API key.
-        const API_KEY = "YOUR_API_KEY";
+        // NOTE: For Imagen API (Thumbnail & Image Generation), your Google Cloud project must have billing enabled.
+        const API_KEY = "AIzaSyCO18Y_YH9AGDKz8cwuswCRsvtLfAtYBYA";
+        const REMOVE_BG_API_KEY = "2a2b9eqtBcEHaMizCBQmMXzT";
 
         // --- Maintenance Mode ---
         // Set to 'true' to enable maintenance mode, 'false' to disable.
-        const isMaintenanceMode = true;
+        const isMaintenanceMode = false;
 
         // --- Tool Definitions ---
         const tools = [
             { id: 'content-generator', name: 'Content Generator', icon: 'fas fa-magic', description: 'Instantly create SEO-optimized titles, descriptions, and tags.' },
             { id: 'script-generator', name: 'Script Generator', icon: 'fas fa-file-alt', description: 'Generate complete video scripts in any language or tone.' },
+            { id: 'script-rewriter', name: 'Script Rewriter', icon: 'fas fa-feather-alt', description: 'Rewrite your script or get a better version of any YouTube video\'s script.' },
             { id: 'prompt-generator', name: 'Prompt Generator', icon: 'fas fa-lightbulb', description: 'Craft expert-level prompts for AI image, video, and text generation.' },
+            { id: 'thumbnail-maker', name: 'Thumbnail Maker', icon: 'fas fa-wand-magic-sparkles', description: 'Create stunning thumbnails from a prompt or get inspired by a YouTube video.' },
+            { id: 'image-generation', name: 'Image Generation', icon: 'fas fa-palette', description: 'Generate high-quality images from text or other images in any aspect ratio.' },
+            { id: 'image-compressor', name: 'Image Compressor', icon: 'fas fa-compress-alt', description: 'Compress JPEG/PNG images to a smaller file size with high quality.' },
+            { id: 'background-remover', name: 'Background Remover', icon: 'fas fa-eraser', description: 'Automatically remove the background from any image with one click.' },
             { id: 'channel-extractor', name: 'Channel Extractor', icon: 'fab fa-youtube', description: 'Extract data and generate new content from any YouTube video.' },
             { id: 'tags-generator', name: 'Video Tags Generator', icon: 'fas fa-tags', description: 'Generate optimized tags from a YouTube video URL.' },
             { id: 'keyword-suggester', name: 'Keyword Suggester', icon: 'fas fa-key', description: 'Get relevant keywords and tags for your video topic.' },
@@ -239,7 +304,7 @@
             { id: 'embed-code', name: 'Embed Code', icon: 'fas fa-code', description: 'Generate HTML embed codes for your YouTube videos.' }
         ];
 
-        // --- Page Templates (same as before) ---
+        // --- Page Templates ---
         const pageTemplates = {
             home: `
                 <div class="max-w-4xl mx-auto">
@@ -254,13 +319,19 @@
                         <h3 class="text-2xl font-bold mb-6 text-center">About The Developer</h3>
                         <div class="flex flex-col md:flex-row items-center gap-8">
                             <div class="flex-shrink-0"><img src="https://placehold.co/150x150/00FFA3/0D0D0D?text=MT" alt="Mustafa Talks" class="rounded-full w-36 h-36 border-4 border-accent-primary"></div>
-                            <div><h4 class="text-2xl font-bold text-accent-primary">Mustafa Talks</h4><p class="text-text-secondary mt-2">I'm a passionate content creator and developer dedicated to building tools that empower other creators. Talks Tools was born from a need to streamline the creative process, leveraging the power of AI to handle the heavy lifting so you can focus on what you do best: creating amazing content.</p></div>
+                            <div><h4 class="text-2xl font-bold text-accent-primary">Mustafa Talks</h4><p class="text-text-secondary mt-2">As a dedicated content creator and developer, I built Talks Tools from the ground up to solve the real-world problems creators face. My goal is to leverage the power of AI to handle the tedious tasks, freeing you to focus on what you do best: creating amazing, impactful content. This suite is my contribution to the creator community—I hope it helps you on your journey!</p></div>
                         </div>
                     </div>
                 </div>`,
             'content-generator': `
                 <div class="max-w-4xl mx-auto">
-                    <header class="mb-8"><h2 class="text-3xl font-extrabold">AI Content Generator</h2><p class="text-text-secondary mt-1">Create optimized Titles, Descriptions, and Tags.</p></header>
+                    <header class="mb-8 flex justify-between items-center">
+                        <div>
+                            <h2 class="text-3xl font-extrabold">AI Content Generator</h2>
+                            <p class="text-text-secondary mt-1">Create optimized Titles, Descriptions, and Tags.</p>
+                        </div>
+                        <button class="back-to-home-btn secondary-btn p-2 text-xl flex items-center justify-center w-10 h-10"><i class="fas fa-arrow-left"></i></button>
+                    </header>
                     <div class="result-card p-6 mb-8">
                         <label for="content-keyword-input" class="block text-lg font-semibold mb-3 text-accent-primary">Video Topic</label>
                         <div class="flex flex-col sm:flex-row gap-4">
@@ -277,7 +348,13 @@
                 </div>`,
             'script-generator': `
                 <div class="max-w-4xl mx-auto">
-                    <header class="mb-8"><h2 class="text-3xl font-extrabold">AI Script Generator</h2><p class="text-text-secondary mt-1">Generate a complete video script in any language and tone.</p></header>
+                    <header class="mb-8 flex justify-between items-center">
+                        <div>
+                            <h2 class="text-3xl font-extrabold">AI Script Generator</h2>
+                            <p class="text-text-secondary mt-1">Generate a complete video script in any language and tone.</p>
+                        </div>
+                        <button class="back-to-home-btn secondary-btn p-2 text-xl flex items-center justify-center w-10 h-10"><i class="fas fa-arrow-left"></i></button>
+                    </header>
                     <div class="result-card p-6 mb-8">
                         <h3 class="text-xl font-bold mb-4">Need help with a video idea?</h3>
                         <button id="show-idea-helper-btn" class="secondary-btn w-full py-2 px-4 flex items-center justify-center"><i class="fas fa-search mr-2"></i>Generate Video Ideas</button>
@@ -302,9 +379,58 @@
                     </div>
                     <div id="script-results-wrapper" class="result-card p-6 hidden"><div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold">Generated Script</h3><button class="copy-btn text-text-secondary hover:text-accent-primary" title="Copy Script" id="copy-script-btn"><i class="fas fa-copy text-lg"></i></button></div><div id="script-output" class="text-text-secondary whitespace-pre-wrap bg-bg-primary p-4 rounded-lg min-h-[200px]"></div></div>
                 </div>`,
+            'script-rewriter': `
+                <div class="max-w-4xl mx-auto">
+                    <header class="mb-8 flex justify-between items-center">
+                        <div>
+                           <h2 class="text-3xl font-extrabold">AI Script Rewriter</h2>
+                           <p class="text-text-secondary mt-1">Improve your script or get a better version from a YouTube video.</p>
+                        </div>
+                        <button class="back-to-home-btn secondary-btn p-2 text-xl flex items-center justify-center w-10 h-10"><i class="fas fa-arrow-left"></i></button>
+                    </header>
+                    <div class="result-card p-6 mb-8">
+                        <div class="border-b border-border-color mb-4">
+                            <nav class="-mb-px flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-8" aria-label="Tabs">
+                                <button id="tab-rewrite-text" class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-lg border-accent-primary text-accent-primary">Rewrite My Script</button>
+                                <button id="tab-rewrite-url" class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-lg border-transparent text-text-secondary hover:text-text-primary hover:border-gray-300">Rewrite from URL</button>
+                            </nav>
+                        </div>
+                        <div id="panel-rewrite-text">
+                            <label for="rewrite-input-text" class="block text-sm font-semibold mb-2 text-accent-primary">Paste your original script here</label>
+                            <textarea id="rewrite-input-text" class="w-full custom-input min-h-[150px]" placeholder="Paste your script..."></textarea>
+                            <label for="rewrite-upload-input" class="block text-sm font-semibold mt-4 mb-2 text-accent-primary">Or Upload a .txt File</label>
+                            <input type="file" id="rewrite-upload-input" accept=".txt" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-bg-tertiary file:text-text-primary hover:file:bg-gray-600 cursor-pointer">
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                <div><label for="rewrite-language-select" class="block text-sm font-semibold mb-2">Original Language</label><select id="rewrite-language-select" class="w-full custom-select"><option>English</option><option>Roman Urdu</option><option>Hindi</option><option>Spanish</option><option>German</option></select></div>
+                                <div><label for="rewrite-tone-select" class="block text-sm font-semibold mb-2">Desired Tone</label><select id="rewrite-tone-select" class="w-full custom-select"><option>More Engaging</option><option>More Professional</option><option>More Casual</option><option>More Humorous</option><option>More Authoritative</option></select></div>
+                                <div class="col-span-1 md:col-span-2"><label for="rewrite-words-input" class="block text-sm font-semibold mb-2">Desired Word Count (Max 500,000)</label><input type="number" id="rewrite-words-input" class="w-full custom-input" placeholder="e.g., 1500 (leave blank for similar length)"></div>
+                            </div>
+                        </div>
+                        <div id="panel-rewrite-url" class="hidden">
+                            <label for="rewrite-input-url" class="block text-sm font-semibold mb-2 text-accent-primary">YouTube Video URL</label>
+                            <input type="text" id="rewrite-input-url" class="w-full custom-input" placeholder="e.g., https://www.youtube.com/watch?v=...">
+                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                <div><label for="rewrite-url-tone-select" class="block text-sm font-semibold mb-2">Desired Tone</label><select id="rewrite-url-tone-select" class="w-full custom-select"><option>More Engaging</option><option>More Professional</option><option>More Casual</option><option>More Humorous</option><option>More Authoritative</option></select></div>
+                                <div><label for="rewrite-url-words-input" class="block text-sm font-semibold mb-2">Desired Word Count</label><input type="number" id="rewrite-url-words-input" class="w-full custom-input" placeholder="e.g., 1500 (leave blank for similar length)"></div>
+                            </div>
+                        </div>
+                        <div class="mt-6"><button id="rewrite-script-btn" class="main-btn w-full py-3 px-6 flex items-center justify-center"><i class="fas fa-feather-alt mr-2"></i><span class="btn-text">Rewrite Script</span><div class="spinner hidden w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div></button></div>
+                    </div>
+                    <div id="rewrite-results-wrapper" class="result-card p-6 hidden">
+                        <div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold">Rewritten Script</h3><button class="copy-btn text-text-secondary hover:text-accent-primary" title="Copy Script" id="copy-rewritten-script-btn"><i class="fas fa-copy text-lg"></i></button></div>
+                        <div id="rewritten-script-output" class="text-text-secondary whitespace-pre-wrap bg-bg-primary p-4 rounded-lg min-h-[200px]"></div>
+                    </div>
+                </div>`,
             'prompt-generator': `
                 <div class="max-w-4xl mx-auto">
-                    <header class="mb-8"><h2 class="text-3xl font-extrabold">AI Prompt Generator</h2><p class="text-text-secondary mt-1">Craft expert-level prompts for any AI model.</p></header>
+                    <header class="mb-8 flex justify-between items-center">
+                        <div>
+                           <h2 class="text-3xl font-extrabold">AI Prompt Generator</h2>
+                           <p class="text-text-secondary mt-1">Craft expert-level prompts for any AI model.</p>
+                        </div>
+                        <button class="back-to-home-btn secondary-btn p-2 text-xl flex items-center justify-center w-10 h-10"><i class="fas fa-arrow-left"></i></button>
+                    </header>
                     <div class="result-card p-6 mb-8">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
                             <div class="col-span-1 md:col-span-2"><label for="prompt-topic-input" class="block text-sm font-semibold mb-2 text-accent-primary">Your Topic / Idea</label><input type="text" id="prompt-topic-input" class="w-full custom-input" placeholder="e.g., 'A haunted spaceship' or 'A summary of climate change'"></div>
@@ -315,10 +441,204 @@
                         <div class="mt-6"><button id="generate-prompt-btn" class="main-btn w-full py-3 px-6 flex items-center justify-center"><i class="fas fa-lightbulb mr-2"></i><span class="btn-text">Generate Prompts</span><div class="spinner hidden w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div></button></div>
                     </div>
                     <div id="prompt-results-wrapper" class="space-y-6 hidden"></div>
+                    
+                    <div class="result-card p-6 mt-8">
+                        <h3 class="text-2xl font-bold mb-4">Thumbnail Prompt Inspiration</h3>
+                        <p class="text-text-secondary mb-6">Generate detailed prompts for your thumbnails.</p>
+                        <div class="space-y-4">
+                            <div>
+                                <label for="insp-idea-input" class="block text-sm font-semibold mb-2 text-accent-primary">Your Thumbnail Idea or Title</label>
+                                <input type="text" id="insp-idea-input" class="w-full custom-input" placeholder="e.g., 'My New Gaming PC Build'">
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div><label for="insp-style-select" class="block text-sm font-semibold mb-2">Style</label><select id="insp-style-select" class="w-full custom-select"><option>Best/Default</option><option>Tech</option><option>Vlog</option><option>Gaming</option><option>Tutorial</option></select></div>
+                                <div><label for="insp-tone-select" class="block text-sm font-semibold mb-2">Tone</label><select id="insp-tone-select" class="w-full custom-select"><option>Dramatic</option><option>Fun & Energetic</option><option>Clean & Minimalist</option><option>Bold & Exciting</option></select></div>
+                                <div><label for="insp-length-select" class="block text-sm font-semibold mb-2">Prompt Length</label><select id="insp-length-select" class="w-full custom-select"><option>Medium</option><option>Short</option><option>Detailed</option></select></div>
+                            </div>
+                             <button id="generate-inspiration-prompt-btn" class="main-btn w-full py-2 px-4 mt-2">Generate Prompt from Idea</button>
+                        </div>
+                        <div class="text-center my-4 text-text-secondary">OR</div>
+                        <div>
+                            <label class="block text-sm font-semibold mb-2 text-accent-primary">Upload an Image for Inspiration</label>
+                            <input type="file" id="inspiration-upload-input" accept="image/jpeg, image/png" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-bg-tertiary file:text-text-primary hover:file:bg-gray-600 cursor-pointer">
+                        </div>
+                        <div id="inspiration-prompt-output-wrapper" class="mt-6 hidden">
+                            <div class="flex justify-between items-center mb-2"><h4 class="text-xl font-bold">Generated Prompt</h4><button class="copy-btn text-text-secondary hover:text-accent-primary" title="Copy Prompt" id="copy-inspiration-prompt-btn"><i class="fas fa-copy text-lg"></i></button></div>
+                            <div id="inspiration-prompt-output" class="text-text-secondary whitespace-pre-wrap bg-bg-primary p-4 rounded-lg min-h-[100px]"></div>
+                        </div>
+                    </div>
+                </div>`,
+            'thumbnail-maker': `
+                <div class="max-w-6xl mx-auto">
+                    <header class="mb-8 flex justify-between items-center">
+                        <div>
+                           <h2 class="text-3xl font-extrabold">AI Thumbnail Maker</h2>
+                           <p class="text-text-secondary mt-1">Generate stunning thumbnails from text or get inspired by a video.</p>
+                        </div>
+                        <button class="back-to-home-btn secondary-btn p-2 text-xl flex items-center justify-center w-10 h-10"><i class="fas fa-arrow-left"></i></button>
+                    </header>
+                    
+                    <div class="result-card p-6 mb-8">
+                        <div class="border-b border-border-color mb-4">
+                            <nav class="-mb-px flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-8" aria-label="Tabs">
+                                <button id="tab-create-ai" class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-lg border-accent-primary text-accent-primary">Create with AI</button>
+                                <button id="tab-get-inspiration" class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-lg border-transparent text-text-secondary hover:text-text-primary hover:border-gray-300">Get Inspiration</button>
+                            </nav>
+                        </div>
+
+                        <!-- Create with AI Panel -->
+                        <div id="panel-create-ai">
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                <div class="lg:col-span-3"><label for="thumb-prompt-input" class="block text-sm font-semibold mb-2 text-accent-primary">Title / Idea / Prompt</label><input type="text" id="thumb-prompt-input" class="w-full custom-input" placeholder="e.g., 'Unboxing the new Galaxy Z Fold 10'"></div>
+                                <div><label for="thumb-tone-select" class="block text-sm font-semibold mb-2 text-accent-primary">Tone</label><select id="thumb-tone-select" class="w-full custom-select"><option>Bold & Punchy</option><option>Minimalist & Clean</option><option>Cinematic & Dramatic</option><option>Playful & Fun</option><option>Futuristic & Techy</option></select></div>
+                                <div><label for="thumb-type-select" class="block text-sm font-semibold mb-2 text-accent-primary">Type</label><select id="thumb-type-select" class="w-full custom-select"><option>Vlog</option><option>Gaming</option><option>Tech Review</option><option>Tutorial</option><option>Documentary</option></select></div>
+                                <div><label for="thumb-ratio-select" class="block text-sm font-semibold mb-2 text-accent-primary">Aspect Ratio</label><select id="thumb-ratio-select" class="w-full custom-select"><option value="16:9">YouTube (16:9)</option><option value="9:16">TikTok/Shorts (9:16)</option></select></div>
+                                <div class="lg:col-span-3"><label for="thumb-count-input" class="block text-sm font-semibold mb-2 text-accent-primary">Number to Generate</label><input type="number" id="thumb-count-input" class="w-full custom-input" value="2" min="1" max="4"></div>
+                            </div>
+                        </div>
+
+                        <!-- Get Inspiration Panel -->
+                        <div id="panel-get-inspiration" class="hidden">
+                            <label class="block text-sm font-semibold mb-2 text-accent-primary">Get inspired by a URL or upload an image</label>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div><input type="text" id="thumb-url-input" class="w-full custom-input" placeholder="Paste a YouTube video link..."></div>
+                                <div><input type="file" id="thumb-upload-input" accept="image/jpeg, image/png" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-bg-tertiary file:text-text-primary hover:file:bg-gray-600 cursor-pointer"></div>
+                                <div class="md:col-span-2"><label for="thumb-ratio-select-inspire" class="block text-sm font-semibold mb-2 text-accent-primary">Aspect Ratio</label><select id="thumb-ratio-select-inspire" class="w-full custom-select"><option value="16:9">YouTube (16:9)</option><option value="9:16">TikTok/Shorts (9:16)</option></select></div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6"><button id="generate-thumbnail-btn" class="main-btn w-full py-3 px-6 flex items-center justify-center"><i class="fas fa-image mr-2"></i><span class="btn-text">Generate Thumbnails</span><div class="spinner hidden w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div></button></div>
+                    </div>
+
+                    <div id="thumbnail-results-wrapper" class="hidden">
+                        <h3 class="text-2xl font-bold mb-4">Generated Thumbnails</h3>
+                        <div id="thumbnail-output" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Generated thumbnails will be injected here -->
+                        </div>
+                    </div>
+                </div>`,
+            'image-generation': `
+                <div class="max-w-6xl mx-auto">
+                    <header class="mb-8 flex justify-between items-center">
+                         <div>
+                           <h2 class="text-3xl font-extrabold">AI Image Generation</h2>
+                           <p class="text-text-secondary mt-1">Create any image from your imagination.</p>
+                        </div>
+                        <button class="back-to-home-btn secondary-btn p-2 text-xl flex items-center justify-center w-10 h-10"><i class="fas fa-arrow-left"></i></button>
+                    </header>
+                    
+                    <div class="result-card p-6 mb-8">
+                        <div class="border-b border-border-color mb-4">
+                            <nav class="-mb-px flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-8" aria-label="Tabs">
+                                <button id="tab-text-to-image" class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-lg border-accent-primary text-accent-primary">Text-to-Image</button>
+                                <button id="tab-image-to-image" class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-lg border-transparent text-text-secondary hover:text-text-primary hover:border-gray-300">Image-to-Image</button>
+                            </nav>
+                        </div>
+
+                        <!-- Text to Image Panel -->
+                        <div id="panel-text-to-image">
+                             <div class="mb-4"><label for="gen-prompt-input" class="block text-sm font-semibold mb-2 text-accent-primary">Your Prompt</label><textarea id="gen-prompt-input" class="w-full custom-input min-h-[100px]" placeholder="e.g., 'A hyper-realistic photo of a cat wearing sunglasses, studio lighting'"></textarea></div>
+                             <div class="result-card p-4 mb-4">
+                                <h4 class="text-lg font-semibold mb-3">Need an Idea?</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div><label for="gen-idea-topic" class="block text-sm font-semibold mb-2">Topic</label><input type="text" id="gen-idea-topic" class="w-full custom-input" placeholder="e.g., 'space' or 'fantasy creature'"></div>
+                                    <div><label for="gen-idea-style" class="block text-sm font-semibold mb-2">Style</label><select id="gen-idea-style" class="w-full custom-select"><option>Photorealistic</option><option>Anime</option><option>3D Model</option><option>Digital Art</option><option>Pixel Art</option><option>Cinematic</option></select></div>
+                                </div>
+                                <button id="gen-idea-btn" class="secondary-btn w-full mt-4 py-2">Generate a Detailed Prompt</button>
+                             </div>
+                        </div>
+
+                        <!-- Image to Image Panel -->
+                        <div id="panel-image-to-image" class="hidden">
+                             <div><label for="gen-image-upload" class="block text-sm font-semibold mb-2 text-accent-primary">Upload Your Sample Image</label><input type="file" id="gen-image-upload" accept="image/jpeg, image/png" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-bg-tertiary file:text-text-primary hover:file:bg-gray-600 cursor-pointer"></div>
+                             <img id="gen-image-preview" class="mt-4 rounded-lg max-h-64 mx-auto hidden">
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                            <div><label for="gen-ratio-select" class="block text-sm font-semibold mb-2 text-accent-primary">Aspect Ratio</label><select id="gen-ratio-select" class="w-full custom-select"><option value="1:1">Square (1:1)</option><option value="16:9">Widescreen (16:9)</option><option value="9:16">Portrait (9:16)</option><option value="4:5">Social (4:5)</option><option value="2:3">Portrait (2:3)</option><option value="3:2">Landscape (3:2)</option></select></div>
+                            <div><label for="gen-count-input" class="block text-sm font-semibold mb-2 text-accent-primary">Number to Generate</label><input type="number" id="gen-count-input" class="w-full custom-input" value="1" min="1" max="3"></div>
+                        </div>
+
+                        <div class="mt-6"><button id="generate-image-btn" class="main-btn w-full py-3 px-6 flex items-center justify-center"><i class="fas fa-image mr-2"></i><span class="btn-text">Generate Images</span><div class="spinner hidden w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div></button></div>
+                    </div>
+
+                    <div id="image-gen-results-wrapper" class="hidden">
+                        <h3 class="text-2xl font-bold mb-4">Your Generated Images</h3>
+                        <div id="image-gen-output" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <!-- Generated images will be injected here -->
+                        </div>
+                    </div>
+                </div>`,
+            'image-compressor': `
+                <div class="max-w-4xl mx-auto">
+                    <header class="mb-8 flex justify-between items-center">
+                        <div>
+                           <h2 class="text-3xl font-extrabold">Image Compressor</h2>
+                           <p class="text-text-secondary mt-1">Reduce image file size while maintaining quality.</p>
+                        </div>
+                        <button class="back-to-home-btn secondary-btn p-2 text-xl flex items-center justify-center w-10 h-10"><i class="fas fa-arrow-left"></i></button>
+                    </header>
+                    <div class="result-card p-6 mb-8">
+                        <label for="image-upload-input" class="block text-lg font-semibold mb-3 text-accent-primary">Upload Image</label>
+                        <input type="file" id="image-upload-input" accept="image/jpeg, image/png" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-accent-primary file:text-bg-primary hover:file:bg-accent-hover cursor-pointer">
+                        
+                        <div id="image-quality-section" class="mt-6 hidden">
+                            <label for="image-quality-slider" class="block text-lg font-semibold mb-3 text-accent-primary">Compression Quality: <span id="image-quality-value">0.9</span></label>
+                            <input type="range" id="image-quality-slider" min="0.1" max="1" step="0.1" value="0.9" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-accent-primary">
+                        </div>
+                    </div>
+                    <div id="image-compressor-results-wrapper" class="hidden grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="result-card p-4 text-center">
+                            <h3 class="text-xl font-bold mb-4">Original Image</h3>
+                            <img id="original-image-preview" src="https://placehold.co/600x400/1A1A1A/A3A3A3?text=Original+Image" class="w-full rounded-lg mx-auto mb-2">
+                            <p id="original-image-size" class="text-text-secondary"></p>
+                        </div>
+                        <div class="result-card p-4 text-center">
+                            <h3 class="text-xl font-bold mb-4">Compressed Image</h3>
+                            <img id="compressed-image-preview" src="https://placehold.co/600x400/1A1A1A/A3A3A3?text=Compressed+Image" class="w-full rounded-lg mx-auto mb-2">
+                            <p id="compressed-image-size" class="text-text-secondary mb-4"></p>
+                            <button id="download-compressed-btn" class="main-btn py-2 px-5 inline-flex items-center" disabled><i class="fas fa-download mr-2"></i>Download Image</button>
+                        </div>
+                    </div>
+                </div>`,
+            'background-remover': `
+                <div class="max-w-4xl mx-auto">
+                    <header class="mb-8 flex justify-between items-center">
+                        <div>
+                           <h2 class="text-3xl font-extrabold">Image Background Remover</h2>
+                           <p class="text-text-secondary mt-1">Automatically remove the background from any image.</p>
+                        </div>
+                        <button class="back-to-home-btn secondary-btn p-2 text-xl flex items-center justify-center w-10 h-10"><i class="fas fa-arrow-left"></i></button>
+                    </header>
+                    <div class="result-card p-6 mb-8">
+                        <label for="bg-remove-upload-input" class="block text-lg font-semibold mb-3 text-accent-primary">Upload Image</label>
+                        <input type="file" id="bg-remove-upload-input" accept="image/jpeg, image/png" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-accent-primary file:text-bg-primary hover:file:bg-accent-hover cursor-pointer">
+                        <p class="text-xs text-text-secondary mt-2">Note: This tool requires an API key from remove.bg. Paste it in the script to use.</p>
+                    </div>
+                    <div id="bg-remover-results-wrapper" class="hidden grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="result-card p-4 text-center">
+                            <h3 class="text-xl font-bold mb-4">Original</h3>
+                            <img id="original-bg-image-preview" src="https://placehold.co/600x400/1A1A1A/A3A3A3?text=Original+Image" class="w-full rounded-lg mx-auto mb-2">
+                        </div>
+                        <div class="result-card p-4 text-center relative">
+                            <div id="bg-remover-loader" class="absolute inset-0 bg-bg-secondary/80 flex items-center justify-center hidden rounded-lg">
+                                <div class="w-8 h-8 border-4 border-accent-primary border-t-transparent rounded-full animate-spin"></div>
+                            </div>
+                            <h3 class="text-xl font-bold mb-4">Background Removed</h3>
+                            <img id="removed-bg-image-preview" src="https://placehold.co/600x400/1A1A1A/A3A3A3?text=Result" class="w-full rounded-lg mx-auto mb-2" style="background-image: url('data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Crect width=\'10\' height=\'10\' x=\'0\' y=\'0\' fill=\'%233a3a3a\'/%3E%3Crect width=\'10\' height=\'10\' x=\'10\' y=\'10\' fill=\'%233a3a3a\'/%3E%3C/svg%3E');">
+                            <button id="download-removed-bg-btn" class="main-btn py-2 px-5 mt-4 inline-flex items-center" disabled><i class="fas fa-download mr-2"></i>Download HD</button>
+                        </div>
+                    </div>
                 </div>`,
             'channel-extractor': `
                 <div class="max-w-4xl mx-auto">
-                    <header class="mb-8"><h2 class="text-3xl font-extrabold">Channel Extractor</h2><p class="text-text-secondary mt-1">Extract data and generate new content from any YouTube video.</p></header>
+                    <header class="mb-8 flex justify-between items-center">
+                        <div>
+                           <h2 class="text-3xl font-extrabold">Channel Extractor</h2>
+                           <p class="text-text-secondary mt-1">Extract data and generate new content from any YouTube video.</p>
+                        </div>
+                        <button class="back-to-home-btn secondary-btn p-2 text-xl flex items-center justify-center w-10 h-10"><i class="fas fa-arrow-left"></i></button>
+                    </header>
                     <div class="result-card p-6 mb-8">
                         <label for="extractor-url-input" class="block text-lg font-semibold mb-3 text-accent-primary">YouTube Video URL</label>
                         <div class="flex flex-col sm:flex-row gap-4">
@@ -350,7 +670,13 @@
                 </div>`,
             'tags-generator': `
                 <div class="max-w-4xl mx-auto">
-                    <header class="mb-8"><h2 class="text-3xl font-extrabold">Video Tags Generator</h2><p class="text-text-secondary mt-1">Generate optimized tags from a YouTube video URL.</p></header>
+                    <header class="mb-8 flex justify-between items-center">
+                        <div>
+                           <h2 class="text-3xl font-extrabold">Video Tags Generator</h2>
+                           <p class="text-text-secondary mt-1">Generate optimized tags from a YouTube video URL.</p>
+                        </div>
+                        <button class="back-to-home-btn secondary-btn p-2 text-xl flex items-center justify-center w-10 h-10"><i class="fas fa-arrow-left"></i></button>
+                    </header>
                     <div class="result-card p-6 mb-8">
                         <label for="tags-url-input" class="block text-lg font-semibold mb-3 text-accent-primary">YouTube Video URL</label>
                         <div class="flex flex-col sm:flex-row gap-4">
@@ -365,7 +691,13 @@
                 </div>`,
             'keyword-suggester': `
                 <div class="max-w-4xl mx-auto">
-                    <header class="mb-8"><h2 class="text-3xl font-extrabold">Keyword Suggester</h2><p class="text-text-secondary mt-1">Get relevant keywords for your video topic.</p></header>
+                    <header class="mb-8 flex justify-between items-center">
+                        <div>
+                           <h2 class="text-3xl font-extrabold">Keyword Suggester</h2>
+                           <p class="text-text-secondary mt-1">Get relevant keywords for your video topic.</p>
+                        </div>
+                        <button class="back-to-home-btn secondary-btn p-2 text-xl flex items-center justify-center w-10 h-10"><i class="fas fa-arrow-left"></i></button>
+                    </header>
                     <div class="result-card p-6 mb-8">
                         <label for="keyword-suggester-input" class="block text-lg font-semibold mb-3 text-accent-primary">Video Title or Topic</label>
                         <div class="flex flex-col sm:flex-row gap-4">
@@ -380,7 +712,13 @@
                 </div>`,
             'thumbnail-downloader': `
                 <div class="max-w-4xl mx-auto">
-                    <header class="mb-8"><h2 class="text-3xl font-extrabold">Thumbnail Downloader</h2><p class="text-text-secondary mt-1">Download any YouTube video's thumbnail in high quality.</p></header>
+                    <header class="mb-8 flex justify-between items-center">
+                        <div>
+                           <h2 class="text-3xl font-extrabold">Thumbnail Downloader</h2>
+                           <p class="text-text-secondary mt-1">Download any YouTube video's thumbnail in high quality.</p>
+                        </div>
+                        <button class="back-to-home-btn secondary-btn p-2 text-xl flex items-center justify-center w-10 h-10"><i class="fas fa-arrow-left"></i></button>
+                    </header>
                     <div class="result-card p-6 mb-8">
                         <label for="thumbnail-url-input" class="block text-lg font-semibold mb-3 text-accent-primary">YouTube Video URL</label>
                         <div class="flex flex-col sm:flex-row gap-4">
@@ -396,7 +734,13 @@
                 </div>`,
             'find-competitors': `
                 <div class="max-w-4xl mx-auto">
-                    <header class="mb-8"><h2 class="text-3xl font-extrabold">Find Competitors</h2><p class="text-text-secondary mt-1">Get AI-powered analysis of competitor channels.</p></header>
+                    <header class="mb-8 flex justify-between items-center">
+                        <div>
+                           <h2 class="text-3xl font-extrabold">Find Competitors</h2>
+                           <p class="text-text-secondary mt-1">Get AI-powered analysis of competitor channels.</p>
+                        </div>
+                        <button class="back-to-home-btn secondary-btn p-2 text-xl flex items-center justify-center w-10 h-10"><i class="fas fa-arrow-left"></i></button>
+                    </header>
                     <div class="result-card p-6 mb-8">
                         <label for="competitor-topic-input" class="block text-lg font-semibold mb-3 text-accent-primary">Channel URL or Handle</label>
                         <div class="flex flex-col sm:flex-row gap-4">
@@ -411,7 +755,13 @@
                 </div>`,
             'subscribe-link': `
                 <div class="max-w-4xl mx-auto">
-                    <header class="mb-8"><h2 class="text-3xl font-extrabold">Subscribe Link Generator</h2><p class="text-text-secondary mt-1">Create a link that prompts users to subscribe.</p></header>
+                    <header class="mb-8 flex justify-between items-center">
+                        <div>
+                           <h2 class="text-3xl font-extrabold">Subscribe Link Generator</h2>
+                           <p class="text-text-secondary mt-1">Create a link that prompts users to subscribe.</p>
+                        </div>
+                        <button class="back-to-home-btn secondary-btn p-2 text-xl flex items-center justify-center w-10 h-10"><i class="fas fa-arrow-left"></i></button>
+                    </header>
                     <div class="result-card p-6 mb-8">
                         <label for="subscribe-url-input" class="block text-lg font-semibold mb-3 text-accent-primary">Your YouTube Channel URL</label>
                         <div class="flex flex-col sm:flex-row gap-4">
@@ -426,7 +776,13 @@
                 </div>`,
             'money-calculator': `
                 <div class="max-w-4xl mx-auto">
-                    <header class="mb-8"><h2 class="text-3xl font-extrabold">YouTube Money Calculator</h2><p class="text-text-secondary mt-1">Estimate your potential earnings.</p></header>
+                    <header class="mb-8 flex justify-between items-center">
+                        <div>
+                           <h2 class="text-3xl font-extrabold">YouTube Money Calculator</h2>
+                           <p class="text-text-secondary mt-1">Estimate your potential earnings.</p>
+                        </div>
+                        <button class="back-to-home-btn secondary-btn p-2 text-xl flex items-center justify-center w-10 h-10"><i class="fas fa-arrow-left"></i></button>
+                    </header>
                     <div class="result-card p-6 mb-8">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div><label for="calculator-views-input" class="block text-sm font-semibold mb-2 text-accent-primary">Daily Views</label><input type="number" id="calculator-views-input" class="w-full custom-input" placeholder="e.g., 50000"></div>
@@ -441,7 +797,13 @@
                 </div>`,
             'title-capitalizer': `
                 <div class="max-w-4xl mx-auto">
-                    <header class="mb-8"><h2 class="text-3xl font-extrabold">Video Title Capitalizer</h2><p class="text-text-secondary mt-1">Properly capitalize your video titles.</p></header>
+                    <header class="mb-8 flex justify-between items-center">
+                        <div>
+                           <h2 class="text-3xl font-extrabold">Video Title Capitalizer</h2>
+                           <p class="text-text-secondary mt-1">Properly capitalize your video titles.</p>
+                        </div>
+                        <button class="back-to-home-btn secondary-btn p-2 text-xl flex items-center justify-center w-10 h-10"><i class="fas fa-arrow-left"></i></button>
+                    </header>
                     <div class="result-card p-6 mb-8">
                         <label for="capitalize-input" class="block text-lg font-semibold mb-3 text-accent-primary">Enter Title Here</label>
                         <textarea id="capitalize-input" class="w-full custom-input min-h-[100px]" placeholder="e.g., my awesome new video about tech"></textarea>
@@ -454,7 +816,13 @@
                 </div>`,
             'embed-code': `
                 <div class="max-w-4xl mx-auto">
-                    <header class="mb-8"><h2 class="text-3xl font-extrabold">YouTube Embed Code Generator</h2><p class="text-text-secondary mt-1">Create embed codes for your videos.</p></header>
+                    <header class="mb-8 flex justify-between items-center">
+                        <div>
+                           <h2 class="text-3xl font-extrabold">YouTube Embed Code Generator</h2>
+                           <p class="text-text-secondary mt-1">Create embed codes for your videos.</p>
+                        </div>
+                        <button class="back-to-home-btn secondary-btn p-2 text-xl flex items-center justify-center w-10 h-10"><i class="fas fa-arrow-left"></i></button>
+                    </header>
                     <div class="result-card p-6 mb-8">
                         <label for="embed-url-input" class="block text-lg font-semibold mb-3 text-accent-primary">YouTube Video URL</label>
                         <input type="text" id="embed-url-input" class="w-full custom-input" placeholder="e.g., https://www.youtube.com/watch?v=dQw4w9WgXcQ">
@@ -478,7 +846,11 @@
             script: '', prompts: [],
             extractorTitle: '', extractorDesc: '', extractorTags: '',
             generatedTags: '', suggestedKeywords: '',
-            subscribeLink: '', capitalizedTitle: '', embedCode: ''
+            subscribeLink: '', capitalizedTitle: '', embedCode: '',
+            compressedImageDataUrl: null, compressedImageFileName: '',
+            removedBgImageUrl: null, removedBgImageFileName: '',
+            generatedThumbnails: [],
+            rewrittenScript: ''
         };
 
         const pages = {};
@@ -564,6 +936,16 @@
                     }
                 });
             });
+            
+            document.body.addEventListener('click', function(e) {
+                if (e.target.closest('.back-to-home-btn')) {
+                    e.preventDefault();
+                    const homeLink = document.querySelector('.nav-trigger[data-page="home"]');
+                    if (homeLink) {
+                        homeLink.click();
+                    }
+                }
+            });
 
             document.querySelectorAll('.coming-soon-link').forEach(link => {
                 link.addEventListener('click', (e) => {
@@ -574,6 +956,7 @@
 
             get('hamburger-btn')?.addEventListener('click', toggleMenu);
             get('overlay')?.addEventListener('click', toggleMenu);
+            get('theme-toggle-btn')?.addEventListener('click', toggleTheme);
 
             // Bind listeners for each page
             get('generate-content-btn')?.addEventListener('click', handleContentGeneration);
@@ -588,6 +971,10 @@
 
             get('prompt-category-select')?.addEventListener('change', updatePromptStyles);
             get('generate-prompt-btn')?.addEventListener('click', handlePromptGeneration);
+            get('generate-inspiration-prompt-btn')?.addEventListener('click', handleInspirationPromptGeneration);
+            get('inspiration-upload-input')?.addEventListener('change', handleInspirationUpload);
+            get('copy-inspiration-prompt-btn')?.addEventListener('click', () => copyToClipboard(document.getElementById('inspiration-prompt-output').innerText));
+
 
             get('extract-btn')?.addEventListener('click', handleExtraction);
             get('download-thumbnail-btn')?.addEventListener('click', () => downloadImage(get('extractor-thumbnail-output').src, generatedData.extractorTitle));
@@ -617,6 +1004,49 @@
 
             get('generate-embed-btn')?.addEventListener('click', handleEmbedCodeGeneration);
             get('copy-embed-btn')?.addEventListener('click', () => copyToClipboard(generatedData.embedCode));
+
+            // Image Compressor Listeners
+            get('image-upload-input')?.addEventListener('change', handleImageUpload);
+            get('image-quality-slider')?.addEventListener('input', handleImageCompression);
+            get('download-compressed-btn')?.addEventListener('click', downloadCompressedImage);
+
+            // Background Remover Listeners
+            get('bg-remove-upload-input')?.addEventListener('change', handleBgRemoval);
+            get('download-removed-bg-btn')?.addEventListener('click', downloadRemovedBgImage);
+
+            // Thumbnail Maker Listeners
+            get('tab-create-ai')?.addEventListener('click', () => switchThumbnailTab('create-ai'));
+            get('tab-get-inspiration')?.addEventListener('click', () => switchThumbnailTab('get-inspiration'));
+            get('generate-thumbnail-btn')?.addEventListener('click', handleThumbnailGeneration);
+            
+            // Image Generation Listeners
+            get('tab-text-to-image')?.addEventListener('click', () => switchImageGenTab('text-to-image'));
+            get('tab-image-to-image')?.addEventListener('click', () => switchImageGenTab('image-to-image'));
+            get('gen-idea-btn')?.addEventListener('click', generateImageIdea);
+            get('gen-image-upload')?.addEventListener('change', handleGenImageUpload);
+            get('generate-image-btn')?.addEventListener('click', handleImageGeneration);
+            
+            // Script Rewriter Listeners
+            get('tab-rewrite-text')?.addEventListener('click', () => switchScriptRewriteTab('text'));
+            get('tab-rewrite-url')?.addEventListener('click', () => switchScriptRewriteTab('url'));
+            get('rewrite-script-btn')?.addEventListener('click', handleScriptRewrite);
+            get('copy-rewritten-script-btn')?.addEventListener('click', () => copyToClipboard(generatedData.rewrittenScript));
+            get('rewrite-upload-input')?.addEventListener('change', handleScriptFileUpload);
+            
+            // Scroll to Top Listener
+            get('scroll-to-top-btn')?.addEventListener('click', () => {
+                get('main-content').scrollTo({ top: 0, behavior: 'smooth' });
+            });
+            get('main-content')?.addEventListener('scroll', () => {
+                const scrollToTopBtn = get('scroll-to-top-btn');
+                if (get('main-content').scrollTop > 200) {
+                    scrollToTopBtn.classList.remove('hidden');
+                    scrollToTopBtn.classList.add('flex');
+                } else {
+                    scrollToTopBtn.classList.add('hidden');
+                    scrollToTopBtn.classList.remove('flex');
+                }
+            });
         }
 
 
@@ -635,12 +1065,30 @@
             if(btnText) btnText.style.display = isLoading ? 'none' : 'inline';
             if(spinner) spinner.style.display = isLoading ? 'block' : 'none';
         }
+        
+        function toggleTheme() {
+            const body = document.body;
+            const icon = document.getElementById('theme-icon');
+            body.classList.toggle('light-mode');
+            
+            if (body.classList.contains('light-mode')) {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+                localStorage.setItem('theme', 'light');
+            } else {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Apply saved theme on load
+        if (localStorage.getItem('theme') === 'light') {
+            document.body.classList.add('light-mode');
+            document.getElementById('theme-icon').classList.replace('fa-sun', 'fa-moon');
+        }
 
         async function callGeminiAPI(prompt) {
-            if (API_KEY === "YOUR_API_KEY") {
-                showPopup("API Key not configured. Please add your API key in the script.", 'error');
-                return null;
-            }
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
             const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
             try {
@@ -657,6 +1105,589 @@
                 return null;
             }
         }
+        
+        async function callImageGenerationAPI(prompt, aspectRatio, count) {
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${API_KEY}`;
+            const payload = { 
+                instances: [{ prompt: prompt }],
+                parameters: { 
+                    "sampleCount": count,
+                    "aspectRatio": aspectRatio
+                } 
+            };
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    showPopup(`Image Gen Error: ${errorData.error.message}`, 'error');
+                    return null;
+                }
+                const result = await response.json();
+                if (result.predictions && result.predictions.length > 0) {
+                    return result.predictions.map(p => `data:image/png;base64,${p.bytesBase64Encoded}`);
+                }
+                return null;
+            } catch (error) {
+                showPopup("Failed to connect to the Image Generation service.", 'error');
+                return null;
+            }
+        }
+        
+        async function callImageToImageAPI(imageFile, count, aspectRatio) {
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${API_KEY}`;
+            const base64Image = await fileToBase64(imageFile);
+            const payload = {
+                instances: [
+                    {
+                        prompt: "Generate a new, high-quality image inspired by the style, subject, and colors of this sample image.",
+                        image: {
+                            bytesBase64Encoded: base64Image
+                        }
+                    }
+                ],
+                parameters: {
+                    "sampleCount": count,
+                    "aspectRatio": aspectRatio,
+                    "mode": "image-to-image"
+                }
+            };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    showPopup(`Image-to-Image Error: ${errorData.error.message}`, 'error');
+                    return null;
+                }
+                const result = await response.json();
+                if (result.predictions && result.predictions.length > 0) {
+                    return result.predictions.map(p => `data:image/png;base64,${p.bytesBase64Encoded}`);
+                }
+                return null;
+            } catch (error) {
+                showPopup("Failed to connect to the Image-to-Image service.", 'error');
+                return null;
+            }
+        }
+        
+        async function callGeminiVisionAPI(prompt, base64ImageData, mimeType) {
+            if (!base64ImageData || typeof base64ImageData !== 'string' || base64ImageData.trim() === '') {
+                showPopup("Error reading image file for analysis. Please try a different image.", "error");
+                return null;
+            }
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+            const payload = {
+                contents: [
+                    {
+                        role: "user",
+                        parts: [
+                            { text: prompt },
+                            {
+                                inlineData: {
+                                    mimeType: mimeType,
+                                    data: base64ImageData
+                                }
+                            }
+                        ]
+                    }
+                ],
+            };
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    showPopup(`Vision API Error: ${errorData.error.message}`, 'error');
+                    return null;
+                }
+                const result = await response.json();
+                return result.candidates?.[0]?.content?.parts?.[0]?.text || null;
+            } catch (error) {
+                showPopup("Failed to connect to the Vision AI service.", 'error');
+                return null;
+            }
+        }
+        
+        // --- Script Rewriter Logic ---
+        function switchScriptRewriteTab(tabId) {
+            const textTab = document.getElementById('tab-rewrite-text');
+            const urlTab = document.getElementById('tab-rewrite-url');
+            const textPanel = document.getElementById('panel-rewrite-text');
+            const urlPanel = document.getElementById('panel-rewrite-url');
+
+            if (tabId === 'text') {
+                textTab.classList.add('border-accent-primary', 'text-accent-primary');
+                textTab.classList.remove('border-transparent', 'text-text-secondary');
+                urlTab.classList.add('border-transparent', 'text-text-secondary');
+                urlTab.classList.remove('border-accent-primary', 'text-accent-primary');
+                textPanel.classList.remove('hidden');
+                urlPanel.classList.add('hidden');
+            } else {
+                urlTab.classList.add('border-accent-primary', 'text-accent-primary');
+                urlTab.classList.remove('border-transparent', 'text-text-secondary');
+                textTab.classList.add('border-transparent', 'text-text-secondary');
+                textTab.classList.remove('border-accent-primary', 'text-accent-primary');
+                urlPanel.classList.remove('hidden');
+                textPanel.classList.add('hidden');
+            }
+        }
+
+        function handleScriptFileUpload(event) {
+            const file = event.target.files[0];
+            if (file && file.type === 'text/plain') {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('rewrite-input-text').value = e.target.result;
+                };
+                reader.readAsText(file);
+            } else if (file) {
+                showPopup("Please upload a valid .txt file.", 'error');
+            }
+        }
+
+        async function handleScriptRewrite() {
+            const button = document.getElementById('rewrite-script-btn');
+            toggleButtonLoading(button, true);
+
+            const resultsWrapper = document.getElementById('rewrite-results-wrapper');
+            const outputDiv = document.getElementById('rewritten-script-output');
+            resultsWrapper.classList.add('hidden');
+
+            const isTextMode = !document.getElementById('panel-rewrite-text').classList.contains('hidden');
+            let originalScript = '';
+            let rewritePrompt = '';
+
+            if (isTextMode) {
+                originalScript = document.getElementById('rewrite-input-text').value.trim();
+                 if (!originalScript) {
+                    showPopup("Please paste or upload your script to rewrite.", 'error');
+                    toggleButtonLoading(button, false);
+                    return;
+                }
+                const language = document.getElementById('rewrite-language-select').value;
+                const tone = document.getElementById('rewrite-tone-select').value;
+                const words = document.getElementById('rewrite-words-input').value;
+                const lengthInstruction = words ? `The final script should be approximately ${words} words long.` : `The final script should be of similar length to the original.`;
+                
+                rewritePrompt = `You are an expert script editor. The original script is in ${language}. Rewrite the following script to be ${tone}. ${lengthInstruction} Improve the hook, flow, and call to action. Here is the original script:\n\n---\n\n${originalScript}`;
+            } else { // URL Mode
+                const url = document.getElementById('rewrite-input-url').value.trim();
+                const tone = document.getElementById('rewrite-url-tone-select').value;
+                const words = document.getElementById('rewrite-url-words-input').value;
+                const lengthInstruction = words ? `The final script should be approximately ${words} words long.` : `The final script should be of similar length to the original.`;
+
+                if (!url) {
+                    showPopup("Please enter a YouTube URL.", 'error');
+                    toggleButtonLoading(button, false);
+                    return;
+                }
+                const videoId = getYouTubeID(url);
+                if (!videoId) {
+                    showPopup("Invalid YouTube URL.", 'error');
+                    toggleButtonLoading(button, false);
+                    return;
+                }
+                const title = await getVideoTitle(videoId);
+                if (!title) {
+                    toggleButtonLoading(button, false);
+                    return;
+                }
+                // Note: True transcript extraction is very complex. We'll ask the AI to generate a script based on the title, then rewrite it.
+                rewritePrompt = `First, act as a scriptwriter and generate a detailed script for a YouTube video titled "${title}". Then, act as an expert editor and rewrite that script from start to finish to be ${tone}. ${lengthInstruction} Make it significantly more engaging, professional, and captivating for the audience. The final output should ONLY be the rewritten, improved script.`;
+            }
+
+            const rewrittenScript = await callGeminiAPI(rewritePrompt);
+            if (rewrittenScript) {
+                generatedData.rewrittenScript = rewrittenScript;
+                outputDiv.innerText = rewrittenScript;
+                resultsWrapper.classList.remove('hidden');
+            }
+
+            toggleButtonLoading(button, false);
+        }
+
+        // --- Thumbnail Maker Logic ---
+        function switchThumbnailTab(tabId) {
+            const createTab = document.getElementById('tab-create-ai');
+            const inspireTab = document.getElementById('tab-get-inspiration');
+            const createPanel = document.getElementById('panel-create-ai');
+            const inspirePanel = document.getElementById('panel-get-inspiration');
+
+            if (tabId === 'create-ai') {
+                createTab.classList.add('border-accent-primary', 'text-accent-primary');
+                createTab.classList.remove('border-transparent', 'text-text-secondary');
+                inspireTab.classList.add('border-transparent', 'text-text-secondary');
+                inspireTab.classList.remove('border-accent-primary', 'text-accent-primary');
+                createPanel.classList.remove('hidden');
+                inspirePanel.classList.add('hidden');
+            } else {
+                inspireTab.classList.add('border-accent-primary', 'text-accent-primary');
+                inspireTab.classList.remove('border-transparent', 'text-text-secondary');
+                createTab.classList.add('border-transparent', 'text-text-secondary');
+                createTab.classList.remove('border-accent-primary', 'text-accent-primary');
+                inspirePanel.classList.remove('hidden');
+                createPanel.classList.add('hidden');
+            }
+        }
+
+        async function handleThumbnailGeneration() {
+            const button = document.getElementById('generate-thumbnail-btn');
+            toggleButtonLoading(button, true);
+
+            const resultsWrapper = document.getElementById('thumbnail-results-wrapper');
+            const outputDiv = document.getElementById('thumbnail-output');
+            resultsWrapper.classList.remove('hidden');
+            outputDiv.innerHTML = `<div class="col-span-1 md:col-span-2 flex justify-center items-center p-8"><div class="w-8 h-8 border-4 border-accent-primary border-t-transparent rounded-full animate-spin"></div><p class="ml-4">Generating... this may take a moment.</p></div>`;
+
+            const createPanel = document.getElementById('panel-create-ai');
+            const isCreateMode = !createPanel.classList.contains('hidden');
+            
+            let allGeneratedImages = [];
+
+            if (isCreateMode) {
+                const idea = document.getElementById('thumb-prompt-input').value.trim();
+                const tone = document.getElementById('thumb-tone-select').value;
+                const type = document.getElementById('thumb-type-select').value;
+                const aspectRatio = document.getElementById('thumb-ratio-select').value;
+                const count = parseInt(document.getElementById('thumb-count-input').value, 10);
+
+                if (!idea) {
+                    showPopup("Please enter a title or idea.", 'error');
+                    toggleButtonLoading(button, false);
+                    return;
+                }
+                const masterPrompt = `Act as a professional YouTube thumbnail designer. Create a visually stunning, high-impact thumbnail for a "${type}" video with a "${tone}" tone. The core idea is: "${idea}". The thumbnail must be eye-catching, with clear composition, vibrant colors, and easily readable text if any. Focus on creating a dynamic and professional image.`;
+                allGeneratedImages = await callImageGenerationAPI(masterPrompt, aspectRatio, count);
+
+            } else { // Inspiration Mode
+                const url = document.getElementById('thumb-url-input').value.trim();
+                const fileInput = document.getElementById('thumb-upload-input');
+                const file = fileInput.files[0];
+                const aspectRatio = document.getElementById('thumb-ratio-select-inspire').value;
+                const count = 2; // Fixed to 2 for inspiration mode
+
+                if (!url && !file) {
+                    showPopup("Please enter a YouTube URL or upload an image.", 'error');
+                    toggleButtonLoading(button, false);
+                    return;
+                }
+
+                if(url) {
+                    const videoId = getYouTubeID(url);
+                    if (!videoId) {
+                        showPopup("Invalid YouTube URL.", 'error');
+                        toggleButtonLoading(button, false);
+                        return;
+                    }
+                    const title = await getVideoTitle(videoId);
+                    if (!title) {
+                        toggleButtonLoading(button, false);
+                        return;
+                    }
+                    const masterPrompt = `Act as a professional YouTube thumbnail designer. A user wants to create a new thumbnail inspired by an existing video titled "${title}". Create a visually stunning, high-impact thumbnail that captures the essence of this title but offers a fresh, clickable visual concept. Focus on dynamic composition, vibrant colors, and professional quality.`;
+                    allGeneratedImages = await callImageGenerationAPI(masterPrompt, aspectRatio, count);
+                } else { // Inspiration from uploaded image
+                     allGeneratedImages = await callImageToImageAPI(file, count, aspectRatio);
+                }
+            }
+            
+            generatedData.generatedThumbnails = allGeneratedImages;
+            displayGeneratedThumbnails(allGeneratedImages);
+            toggleButtonLoading(button, false);
+        }
+
+        function displayGeneratedThumbnails(images) {
+            const outputDiv = document.getElementById('thumbnail-output');
+            outputDiv.innerHTML = '';
+            if (!images || images.length === 0) {
+                outputDiv.innerHTML = `<p class="col-span-1 md:col-span-2 text-center text-text-secondary">Generation failed. Please try again.</p>`;
+                return;
+            }
+
+            images.forEach((imageUrl, index) => {
+                const card = document.createElement('div');
+                card.className = 'result-card p-4 text-center fade-in';
+                card.innerHTML = `
+                    <img src="${imageUrl}" class="w-full rounded-lg mx-auto mb-4" alt="Generated Thumbnail ${index + 1}">
+                    <button class="download-thumb-btn main-btn py-2 px-5 inline-flex items-center" data-url="${imageUrl}" data-index="${index}">
+                        <i class="fas fa-download mr-2"></i>Download
+                    </button>
+                `;
+                outputDiv.appendChild(card);
+            });
+
+            document.querySelectorAll('.download-thumb-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const url = e.currentTarget.dataset.url;
+                    const index = e.currentTarget.dataset.index;
+                    downloadImage(url, `thumbnail_${index + 1}.png`);
+                });
+            });
+        }
+        
+        // --- Image Generation Logic ---
+        function switchImageGenTab(tabId) {
+            const textTab = document.getElementById('tab-text-to-image');
+            const imageTab = document.getElementById('tab-image-to-image');
+            const textPanel = document.getElementById('panel-text-to-image');
+            const imagePanel = document.getElementById('panel-image-to-image');
+
+            if (tabId === 'text-to-image') {
+                textTab.classList.add('border-accent-primary', 'text-accent-primary');
+                textTab.classList.remove('border-transparent', 'text-text-secondary');
+                imageTab.classList.add('border-transparent', 'text-text-secondary');
+                imageTab.classList.remove('border-accent-primary', 'text-accent-primary');
+                textPanel.classList.remove('hidden');
+                imagePanel.classList.add('hidden');
+            } else {
+                imageTab.classList.add('border-accent-primary', 'text-accent-primary');
+                imageTab.classList.remove('border-transparent', 'text-text-secondary');
+                textTab.classList.add('border-transparent', 'text-text-secondary');
+                textTab.classList.remove('border-accent-primary', 'text-accent-primary');
+                imagePanel.classList.remove('hidden');
+                textPanel.classList.add('hidden');
+            }
+        }
+        
+        async function generateImageIdea() {
+            const topic = document.getElementById('gen-idea-topic').value.trim();
+            const style = document.getElementById('gen-idea-style').value;
+            if (!topic) {
+                showPopup("Please enter a topic for the idea.", 'error');
+                return;
+            }
+            const prompt = `Create a short, highly detailed, and creative prompt for an AI image generator. The topic is "${topic}" and the desired style is "${style}".`;
+            const ideaPrompt = await callGeminiAPI(prompt);
+            if (ideaPrompt) {
+                document.getElementById('gen-prompt-input').value = ideaPrompt;
+            }
+        }
+        
+        function handleGenImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const preview = document.getElementById('gen-image-preview');
+                preview.src = e.target.result;
+                preview.classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function handleImageGeneration() {
+            const button = document.getElementById('generate-image-btn');
+            toggleButtonLoading(button, true);
+
+            const resultsWrapper = document.getElementById('image-gen-results-wrapper');
+            const outputDiv = document.getElementById('image-gen-output');
+            resultsWrapper.classList.remove('hidden');
+            outputDiv.innerHTML = `<div class="col-span-1 md:col-span-2 lg:col-span-3 flex justify-center items-center p-8"><div class="w-8 h-8 border-4 border-accent-primary border-t-transparent rounded-full animate-spin"></div><p class="ml-4">Generating your images...</p></div>`;
+
+            const isTextMode = !document.getElementById('panel-text-to-image').classList.contains('hidden');
+            const aspectRatio = document.getElementById('gen-ratio-select').value;
+            const count = parseInt(document.getElementById('gen-count-input').value, 10);
+            
+            let generatedImages = [];
+
+            if (isTextMode) {
+                const prompt = document.getElementById('gen-prompt-input').value.trim();
+                if (!prompt) {
+                    showPopup("Please enter a prompt.", 'error');
+                    toggleButtonLoading(button, false);
+                    return;
+                }
+                generatedImages = await callImageGenerationAPI(prompt, aspectRatio, count);
+            } else { // Image-to-Image mode
+                const fileInput = document.getElementById('gen-image-upload');
+                const file = fileInput.files[0];
+                if (!file) {
+                    showPopup("Please upload an image for inspiration.", 'error');
+                    toggleButtonLoading(button, false);
+                    return;
+                }
+                generatedImages = await callImageToImageAPI(file, count, aspectRatio);
+            }
+            
+            displayGeneratedImages(generatedImages, 'image-gen-output');
+            toggleButtonLoading(button, false);
+        }
+
+        function displayGeneratedImages(images, outputElementId) {
+            const outputDiv = document.getElementById(outputElementId);
+            outputDiv.innerHTML = '';
+            if (!images || images.length === 0) {
+                outputDiv.innerHTML = `<p class="col-span-full text-center text-text-secondary">Generation failed. Please check your API keys and credits, then try again.</p>`;
+                return;
+            }
+
+            images.forEach((imageUrl, index) => {
+                const card = document.createElement('div');
+                card.className = 'result-card p-4 text-center fade-in';
+                card.innerHTML = `
+                    <img src="${imageUrl}" class="w-full rounded-lg mx-auto mb-4" alt="Generated Image ${index + 1}">
+                    <button class="main-btn py-2 px-5 inline-flex items-center" onclick="downloadImage('${imageUrl}', 'generated_image_${index + 1}.png')">
+                        <i class="fas fa-download mr-2"></i>Download
+                    </button>
+                `;
+                outputDiv.appendChild(card);
+            });
+        }
+
+
+        // --- Image Background Remover Logic ---
+        async function handleBgRemoval(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (!REMOVE_BG_API_KEY || REMOVE_BG_API_KEY === "YOUR_REMOVE.BG_API_KEY") {
+                showPopup("remove.bg API Key is not configured. Please add the key in the script.", 'error');
+                return;
+            }
+
+            const resultsWrapper = document.getElementById('bg-remover-results-wrapper');
+            const originalPreview = document.getElementById('original-bg-image-preview');
+            const removedPreview = document.getElementById('removed-bg-image-preview');
+            const loader = document.getElementById('bg-remover-loader');
+            const downloadBtn = document.getElementById('download-removed-bg-btn');
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                originalPreview.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+
+            resultsWrapper.classList.remove('hidden');
+            loader.classList.remove('hidden');
+            downloadBtn.disabled = true;
+            removedPreview.src = 'https://placehold.co/600x400/1A1A1A/A3A3A3?text=Processing...';
+
+            const formData = new FormData();
+            formData.append('image_file', file);
+            formData.append('size', 'auto');
+
+            try {
+                const response = await fetch('https://api.remove.bg/v1.0/removebg', {
+                    method: 'POST',
+                    headers: {
+                        'X-Api-Key': REMOVE_BG_API_KEY,
+                    },
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    const errorMessage = errorData.errors?.[0]?.title || "An unknown error occurred.";
+                    showPopup(`API Error: ${errorMessage}`, 'error');
+                    loader.classList.add('hidden');
+                    return;
+                }
+
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                
+                removedPreview.src = url;
+                generatedData.removedBgImageUrl = url;
+                generatedData.removedBgImageFileName = `bg_removed_${file.name}`;
+                downloadBtn.disabled = false;
+
+            } catch (error) {
+                showPopup("Failed to process the image. Check your network or API key.", 'error');
+            } finally {
+                loader.classList.add('hidden');
+            }
+        }
+
+        function downloadRemovedBgImage() {
+            if (!generatedData.removedBgImageUrl) return;
+            const a = document.createElement('a');
+            a.href = generatedData.removedBgImageUrl;
+            a.download = generatedData.removedBgImageFileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        // --- Image Compressor Logic ---
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                document.getElementById('original-image-preview').src = e.target.result;
+                document.getElementById('original-image-size').textContent = `Size: ${formatBytes(file.size)}`;
+                document.getElementById('image-quality-section').classList.remove('hidden');
+                document.getElementById('image-compressor-results-wrapper').classList.remove('hidden');
+                // Trigger compression immediately on upload
+                handleImageCompression();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function handleImageCompression() {
+            const fileInput = document.getElementById('image-upload-input');
+            const file = fileInput.files[0];
+            if (!file) {
+                 showPopup("Please upload an image first.", 'info');
+                 return;
+            }
+
+            const quality = parseFloat(document.getElementById('image-quality-slider').value);
+            document.getElementById('image-quality-value').textContent = quality;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+
+                    const mimeType = file.type === 'image/png' ? 'image/png' : 'image/jpeg';
+                    const compressedDataUrl = canvas.toDataURL(mimeType, quality);
+                    
+                    document.getElementById('compressed-image-preview').src = compressedDataUrl;
+                    
+                    const compressedBlob = dataURLtoBlob(compressedDataUrl);
+                    const originalSize = file.size;
+                    const compressedSize = compressedBlob.size;
+                    const reduction = Math.round(((originalSize - compressedSize) / originalSize) * 100);
+
+                    document.getElementById('compressed-image-size').textContent = `Size: ${formatBytes(compressedSize)} (${reduction}% smaller)`;
+
+                    generatedData.compressedImageDataUrl = compressedDataUrl;
+                    generatedData.compressedImageFileName = `compressed_${file.name}`;
+                    document.getElementById('download-compressed-btn').disabled = false;
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function downloadCompressedImage() {
+            if (!generatedData.compressedImageDataUrl) return;
+            const a = document.createElement('a');
+            a.href = generatedData.compressedImageDataUrl;
+            a.download = generatedData.compressedImageFileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
 
         // --- Content Generation Logic ---
         async function handleContentGeneration() {
@@ -751,7 +1782,7 @@
 
         // --- Prompt Generation Logic ---
         const promptStyles = {
-            'text-to-image': {'Mixed-Media Portrait': `...`,'3D Cartoon Horror-Comedy': `...`},
+            'text-to-image': {'Random': '...', 'Professional': '...', 'Mixed-Media Portrait': `...`,'3D Cartoon Horror-Comedy': `...`},
             'text-to-video': {'Animated Sci-Fi Horror Story': `...`,'100 Faceless 2D Animation Ideas': `...`},
             'general-ai': {'Zero-Shot': '...','One-Shot': '...','Few-Shot': '...','Chain of Thought': '...','Role-Playing': '...','Text Summarization': '...'}
         };
@@ -795,6 +1826,77 @@
                 promptResultsWrapper.classList.remove('hidden');
             }
             toggleButtonLoading(button, false);
+        }
+        
+        async function handleInspirationPromptGeneration() {
+             const idea = document.getElementById('insp-idea-input').value.trim();
+            const style = document.getElementById('insp-style-select').value;
+            const tone = document.getElementById('insp-tone-select').value;
+            const length = document.getElementById('insp-length-select').value;
+
+            if (!idea) {
+                showPopup("Please enter your idea or title.", 'error');
+                return;
+            }
+
+            const prompt = `Create a detailed, ready-to-use prompt for an AI image generator. The prompt should be about: "${idea}". The desired style is "${style}" with a "${tone}" tone. The prompt length should be "${length}".`;
+            const response = await callGeminiAPI(prompt);
+            if (response) {
+                document.getElementById('inspiration-prompt-output').innerText = response;
+                document.getElementById('inspiration-prompt-output-wrapper').classList.remove('hidden');
+                generatedData.inspirationPrompt = response;
+            }
+        }
+        
+        async function generateInspirationPrompt(type) {
+            let prompt = '';
+            if (type === 'upload') {
+                const fileInput = document.getElementById('inspiration-upload-input');
+                const file = fileInput.files[0];
+                if (!file) {
+                    showPopup('Please upload an image to get a prompt for it.', 'info');
+                    return;
+                }
+                const base64Image = await fileToBase64(file);
+                // This is a placeholder for a real vision API call
+                prompt = `Analyze this image and create a detailed prompt for an AI image generator to create a similar high-quality thumbnail. Describe the style, colors, composition, subject, and mood.`;
+                const visionResponse = await callGeminiVisionAPI(prompt, base64Image, file.type);
+                 if (visionResponse) {
+                    document.getElementById('inspiration-prompt-output').innerText = visionResponse;
+                    document.getElementById('inspiration-prompt-output-wrapper').classList.remove('hidden');
+                    generatedData.inspirationPrompt = visionResponse;
+                }
+                return;
+            } 
+            
+            switch(type) {
+                case 'tech':
+                    prompt = "Generate a prompt for a futuristic, sleek tech review thumbnail, featuring a glowing product on a dark, abstract background with circuit board patterns. Use a modern, sans-serif font for the title.";
+                    break;
+                case 'vlog':
+                    prompt = "Generate a prompt for a bright and airy travel vlog thumbnail. A person is looking out over a beautiful landscape, with a soft, warm color grade. Use a friendly, handwritten-style font for the location name.";
+                    break;
+                case 'gaming':
+                    prompt = "Generate a prompt for an action-packed, dynamic gaming thumbnail. It should feature an intense character from the game, explosions in the background, and bold, impactful text for the video title.";
+                    break;
+                case 'tutorial':
+                    prompt = "Generate a prompt for a clean and clear 'how-to' tutorial thumbnail. It should show a before-and-after comparison or a key step of the process, with simple graphics and easy-to-read text.";
+                    break;
+            }
+            
+            const response = await callGeminiAPI(`Create a detailed, ready-to-use prompt for an AI image generator based on this idea: ${prompt}`);
+            if (response) {
+                document.getElementById('inspiration-prompt-output').innerText = response;
+                document.getElementById('inspiration-prompt-output-wrapper').classList.remove('hidden');
+                generatedData.inspirationPrompt = response;
+            }
+        }
+        
+        function handleInspirationUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                generateInspirationPrompt('upload');
+            }
         }
 
         function displayPrompts(prompts) {
@@ -1020,14 +2122,47 @@
 
 
         // --- Utility Functions ---
+        function formatBytes(bytes, decimals = 2) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const dm = decimals < 0 ? 0 : decimals;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+        }
+
+        function dataURLtoBlob(dataurl) {
+            var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+                bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+            while(n--){
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+            return new Blob([u8arr], {type:mime});
+        }
+        
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result.split(',')[1]);
+                reader.onerror = error => reject(error);
+            });
+        }
+
         async function getVideoTitle(videoId) {
             try {
-                const oembedUrl = `https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v=${videoId}&format=json`;
-                const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(oembedUrl)}`);
+                const oembedUrl = `https://noembed.com/embed?url=https://www.youtube.com/watch?v=${videoId}`;
+                const response = await fetch(oembedUrl);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
                 const data = await response.json();
-                const youtubeData = JSON.parse(data.contents);
-                if (youtubeData.title) return youtubeData.title;
-                else throw new Error("Title not found in oEmbed response");
+                if (data.title) {
+                    return data.title;
+                } else if (data.error) {
+                    throw new Error(data.error);
+                }
+                throw new Error("Title not found in response");
             } catch (error) {
                 console.error("Failed to fetch title:", error);
                 showPopup("Could not fetch video title. The video might be private or deleted.", "error");
@@ -1049,18 +2184,12 @@
 
         async function downloadImage(imageSrc, fileName) {
             try {
-                const response = await fetch(imageSrc);
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.style.display = 'none';
-                a.href = url;
-                const safeFileName = fileName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-                a.download = `${safeFileName}.jpg`;
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-                document.body.removeChild(a);
+                const link = document.createElement('a');
+                link.href = imageSrc;
+                link.download = fileName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
             } catch (error) {
                 console.error("Download failed:", error);
                 showPopup("Failed to download image.", "error");
